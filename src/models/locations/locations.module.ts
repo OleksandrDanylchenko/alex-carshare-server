@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
-import { LocationsGateway } from './locations.gateway';
+import { AlertController } from './alert/alert.controller';
+import { ChatGateway } from './chat/chat.gateway';
+import { AlertGateway } from './alert/alert.gateway';
 
 @Module({
-  controllers: [],
-  providers: [LocationsGateway],
+  controllers: [AlertController],
+  providers: [ChatGateway, AlertGateway],
   exports: []
 })
 export class LocationsModule {}
