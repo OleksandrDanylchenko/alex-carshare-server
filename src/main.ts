@@ -4,12 +4,15 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppConfigService } from './config/app/config.service';
 import { ValidationPipe } from '@nestjs/common';
 import * as helmet from 'helmet';
+import { join } from 'path';
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.enableCors();
   app.use(helmet());
   app.useGlobalPipes(new ValidationPipe());
+
+  app.useStaticAssets(join(__dirname, '..', 'static'));
 
   const appConfig: AppConfigService = app.get('AppConfigService');
   await app.listen(appConfig.port);
