@@ -4,17 +4,22 @@ import {
   OnGatewayInit,
   SubscribeMessage,
   WebSocketGateway,
-  WebSocketServer,
-  WsResponse
+  WebSocketServer
 } from '@nestjs/websockets';
 import { Logger } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
 
-@WebSocketGateway()
+// "Path" is used to change default "socket.io" prefix in connections
+// "serveClient" if the getting of the library from the server will be allowed
+@WebSocketGateway(3001, {
+  path: '/websockets',
+  serveClient: true,
+  namespace: '/'
+})
 export class LocationsGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
-  // @WebSocketServer()
-  // private wss: Server;
+  @WebSocketServer()
+  private wss: Server;
 
   private logger = new Logger('AppGateway');
 
@@ -30,16 +35,16 @@ export class LocationsGateway
     this.logger.log(`Client disconnected: ${client.id}`);
   }
 
-  // For only the requesting socket
-  @SubscribeMessage('msgToServer')
-  handleMessage(client: Socket, text: string): WsResponse<string> {
-    // client.emit('msgToClient', text); The impl of socket.io
-    return { event: 'msgToClient', data: text };
-  }
-
-  // // For all connected users
+  // // For only the requesting socket
   // @SubscribeMessage('msgToServer')
-  // handleMessageForEveryone(client: Socket, text: string): void {
-  //   this.wss.emit('msgToClient', text);
+  // handleMessage(client: Socket, text: string): WsResponse<string> {
+  //   // client.emit('msgToClient', text); The impl of socket.io
+  //   return { event: 'msgToClient', data: text };
   // }
+
+  // For all connected users
+  @SubscribeMessage('msgToServer')
+  handleMessageForEveryone(client: Socket, text: string): void {
+    this.wss.emit('msgToClient', text);
+  }
 }

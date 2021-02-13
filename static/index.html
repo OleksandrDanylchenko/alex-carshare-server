@@ -4,7 +4,8 @@
   <meta charset='UTF-8'>
   <title>Socket testing</title>
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/socket.io-client@2.4.0/dist/socket.io.dev.js"></script>
+<!--  <script src="https://cdn.jsdelivr.net/npm/socket.io-client@2.4.0/dist/socket.io.dev.js"></script>-->
+  <script src="http://localhost:3001/websockets/socket.io.js"></script>
 </head>
 <body>
 <div id='v-app'>
@@ -42,7 +43,7 @@
       }
     },
     created () {
-      this.socket = io('http://localhost:3000', { transports: ['websocket'] });
+      this.socket = io('http://localhost:3001', { transports: ['websocket'], path: "/websockets" });
       this.socket.on('msgToClient', msg => {
         this.receiveMessage(msg);
       });
