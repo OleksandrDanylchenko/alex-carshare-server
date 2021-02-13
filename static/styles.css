@@ -5,9 +5,18 @@ main {
 }
 
 section.chat {
-    grid-area: chat
+    grid-area: chat;
 }
 
 section.alerts {
-    grid-area: alerts
+    grid-area: alerts;
+}
+
+.tab-row {
+    padding-top: 20px;
+}
+
+.tab-btn.active {
+    background: blue;
+    color: white;
 }
