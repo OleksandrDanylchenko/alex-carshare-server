@@ -7,19 +7,23 @@ import { MongodbConfigService } from '../../../config/database/mongodb/config.se
   imports: [
     TypeOrmModule.forRootAsync({
       imports: [MongoDbConfigModule],
-      useFactory: async (mongodbConfigService: MongodbConfigService) => ({
-        type: mongodbConfigService.connection,
-        url: mongodbConfigService.connectionString,
-        database: mongodbConfigService.database,
-        logging: mongodbConfigService.logging,
-        synchronize: mongodbConfigService.synchronize,
-        migrationsRun: mongodbConfigService.migrationsRun,
-        entities: mongodbConfigService.entities,
-        migrations: mongodbConfigService.migrations,
-        ssl: true,
-        useUnifiedTopology: true,
-        useNewUrlParser: true
-      }),
+      useFactory: async (mongodbConfigService: MongodbConfigService) => {
+        console.log(mongodbConfigService.entities);
+
+        return {
+          type: mongodbConfigService.connection,
+          url: mongodbConfigService.connectionString,
+          database: mongodbConfigService.database,
+          logging: mongodbConfigService.logging,
+          synchronize: mongodbConfigService.synchronize,
+          migrationsRun: mongodbConfigService.migrationsRun,
+          entities: mongodbConfigService.entities,
+          migrations: mongodbConfigService.migrations,
+          ssl: true,
+          useUnifiedTopology: true,
+          useNewUrlParser: true
+        };
+      },
       inject: [MongodbConfigService]
     } as TypeOrmModuleAsyncOptions)
   ]
