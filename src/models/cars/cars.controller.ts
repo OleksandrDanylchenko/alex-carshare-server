@@ -2,6 +2,9 @@ import {
   ClassSerializerInterceptor,
   Controller,
   Get,
+  Param,
+  Post,
+  Put,
   SerializeOptions,
   UseInterceptors
 } from '@nestjs/common';
@@ -18,6 +21,22 @@ export class CarsController {
   @SerializeOptions({ groups: defaultCarGroups })
   @UseInterceptors(ClassSerializerInterceptor)
   async get(): Promise<CarEntity[]> {
-    return await this.carsService.getAll();
+    return this.carsService.getAll();
   }
+
+  @Public()
+  @Get('/:vim')
+  @SerializeOptions({ groups: defaultCarGroups })
+  @UseInterceptors(ClassSerializerInterceptor)
+  async getByVim(@Param('vim') vim: string): Promise<CarEntity> {
+    return this.carsService.getByVim(vim, [], true);
+  }
+
+  // @Public()
+  // @Post('/')
+  // @SerializeOptions({ groups: defaultCarGroups })
+  // @UseInterceptors(ClassSerializerInterceptor)
+  // async get(): Promise<CarEntity[]> {
+  //   return await this.carsService.getAll();
+  // }
 }

@@ -20,7 +20,6 @@ export class ModelRepository<T, K extends ModelEntity> extends Repository<T> {
             new NotFoundException(`Model not found. ID: ${id}`)
           );
         }
-
         return Promise.resolve(entity);
       })
       .catch((error) => Promise.reject(error));
@@ -51,7 +50,6 @@ export class ModelRepository<T, K extends ModelEntity> extends Repository<T> {
         if (!entity && throwsException) {
           return Promise.reject(new NotFoundException('Model not found'));
         }
-
         return Promise.resolve(entity);
       })
       .catch((error) => Promise.reject(error));
@@ -67,7 +65,6 @@ export class ModelRepository<T, K extends ModelEntity> extends Repository<T> {
         if (!entities && throwsException) {
           return Promise.reject(new NotFoundException('Model not found'));
         }
-
         return Promise.resolve(entities);
       })
       .catch((error) => Promise.reject(error));

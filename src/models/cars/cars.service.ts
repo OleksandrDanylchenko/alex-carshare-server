@@ -7,17 +7,27 @@ import { CarEntity } from './serializers/car.serializer';
 export class CarsService {
   constructor(
     @InjectRepository(CarsRepository)
-    private readonly accountsRepository: CarsRepository
+    private readonly carsRepository: CarsRepository
   ) {}
+
+  async getByVim(
+    vim: string,
+    relations: string[] = [],
+    throwsException = false
+  ): Promise<CarEntity | null> {
+    const car = await this.carsRepository.getOneWhere(
+      { vim },
+      relations,
+      throwsException
+    );
+    return this.carsRepository.transform(car);
+  }
 
   async getAll(
     relations: string[] = [],
     throwsException = false
   ): Promise<CarEntity[] | null> {
-    const cars = await this.accountsRepository.getAll(
-      relations,
-      throwsException
-    );
-    return this.accountsRepository.transformMany(cars);
+    const cars = await this.carsRepository.getAll(relations, throwsException);
+    return this.carsRepository.transformMany(cars);
   }
 }

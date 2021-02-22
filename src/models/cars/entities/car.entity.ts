@@ -4,14 +4,18 @@ import {
   Entity,
   Index,
   ObjectID,
-  ObjectIdColumn
+  ObjectIdColumn,
+  PrimaryColumn
 } from 'typeorm';
 
 @Index('cars_pkey', ['id', 'vin'], { unique: true })
 @Entity('cars')
 export class Car extends BaseEntity {
   @ObjectIdColumn()
-  id: ObjectID;
+  _id: ObjectID;
+
+  @PrimaryColumn()
+  id: string;
 
   @Column({ type: 'text', name: 'vin', unique: true })
   vin: string;
@@ -22,21 +26,21 @@ export class Car extends BaseEntity {
   @Column({ type: 'text', name: 'model' })
   model: string;
 
-  @Column({ type: 'float', name: 'engineCapacity' })
+  @Column({ type: 'double', name: 'engineCapacity' })
   engineCapacity: string;
 
   @Column({ type: 'text', name: 'transmission' })
   transmission: string;
 
-  @Column({ type: 'integer', name: 'mileage' })
+  @Column({ type: 'double', name: 'mileage' })
   mileage: string;
 
   @Column({ type: 'text', name: 'exteriorColor' })
   exteriorColor: string;
 
-  @Column({ type: 'float', name: 'fuelTankCapacity' })
+  @Column({ type: 'double', name: 'fuelTankCapacity' })
   fuelTankCapacity: number;
 
-  @Column({ type: 'float', name: 'washingLiquidCapacity' })
+  @Column({ type: 'double', name: 'washingLiquidCapacity' })
   washingLiquidCapacity: number;
 }
