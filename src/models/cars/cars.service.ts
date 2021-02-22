@@ -10,13 +10,13 @@ export class CarsService {
     private readonly carsRepository: CarsRepository
   ) {}
 
-  async getByVim(
-    vim: string,
+  async getByVin(
+    vin: string,
     relations: string[] = [],
     throwsException = false
   ): Promise<CarEntity | null> {
     const car = await this.carsRepository.getOneWhere(
-      { vim },
+      { vin },
       relations,
       throwsException
     );

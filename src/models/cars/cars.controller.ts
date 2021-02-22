@@ -25,11 +25,11 @@ export class CarsController {
   }
 
   @Public()
-  @Get('/:vim')
+  @Get('/:vin')
   @SerializeOptions({ groups: defaultCarGroups })
   @UseInterceptors(ClassSerializerInterceptor)
-  async getByVim(@Param('vim') vim: string): Promise<CarEntity> {
-    return this.carsService.getByVim(vim, [], true);
+  async getByVim(@Param('vin') vin: string): Promise<CarEntity> {
+    return this.carsService.getByVin(vin, [], true);
   }
 
   // @Public()
