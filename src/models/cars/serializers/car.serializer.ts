@@ -1,17 +1,14 @@
 import { ModelEntity } from '../../../common/serializers/model.serializer';
 import { ICar } from '../interfaces/car.interface';
-import { Exclude, Expose } from 'class-transformer';
-import { ObjectID } from 'typeorm';
+import { Expose } from 'class-transformer';
+import { Transmission } from '../entities/car.entity';
 
 export const defaultCarGroups: string[] = [];
-export const allCarGroups: string[] = [...defaultCarGroups, 'car._id'];
+export const allCarGroups: string[] = [...defaultCarGroups];
 
 export class CarEntity extends ModelEntity implements ICar {
-  @Expose({ groups: ['car._id'] })
-  _id: ObjectID;
-
   @Expose()
-  id: string;
+  _id: string;
 
   @Expose()
   vin: string;
@@ -26,7 +23,7 @@ export class CarEntity extends ModelEntity implements ICar {
   engineCapacity: number;
 
   @Expose()
-  transmission: string;
+  transmission: Transmission;
 
   @Expose()
   mileage: number;

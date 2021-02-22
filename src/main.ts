@@ -9,7 +9,7 @@ async function bootstrap(): Promise<void> {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.enableCors();
   app.use(helmet());
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({ transform: true }));
   const appConfig: AppConfigService = app.get('AppConfigService');
   await app.listen(appConfig.port);
 }

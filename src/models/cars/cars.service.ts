@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CarsRepository } from './cars.repository';
 import { CarEntity } from './serializers/car.serializer';
+import { CreateCarDto } from './dtos/create-car.dto';
 
 @Injectable()
 export class CarsService {
@@ -29,5 +30,10 @@ export class CarsService {
   ): Promise<CarEntity[] | null> {
     const cars = await this.carsRepository.getAll(relations, throwsException);
     return this.carsRepository.transformMany(cars);
+  }
+
+  async create(inputs: CreateCarDto): Promise<CarEntity> {
+    const newCar = await this.carsRepository.createEntity(inputs);
+    return this.carsRepository.transform(newCar);
   }
 }

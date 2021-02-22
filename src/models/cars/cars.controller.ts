@@ -1,16 +1,17 @@
 import {
+  Body,
   ClassSerializerInterceptor,
   Controller,
   Get,
   Param,
   Post,
-  Put,
   SerializeOptions,
   UseInterceptors
 } from '@nestjs/common';
 import { CarEntity, defaultCarGroups } from './serializers/car.serializer';
 import { Public } from '../../common/decorators/routes-privacy.decorator';
 import { CarsService } from './cars.service';
+import { CreateCarDto } from './dtos/create-car.dto';
 
 @Controller('cars')
 export class CarsController {
@@ -32,11 +33,11 @@ export class CarsController {
     return this.carsService.getByVin(vin, [], true);
   }
 
-  // @Public()
-  // @Post('/')
-  // @SerializeOptions({ groups: defaultCarGroups })
-  // @UseInterceptors(ClassSerializerInterceptor)
-  // async get(): Promise<CarEntity[]> {
-  //   return await this.carsService.getAll();
-  // }
+  @Public()
+  @Post('/')
+  @SerializeOptions({ groups: defaultCarGroups })
+  @UseInterceptors(ClassSerializerInterceptor)
+  async create(@Body() inputs: CreateCarDto): Promise<CarEntity> {
+    return await this.carsService.create(inputs);
+  }
 }

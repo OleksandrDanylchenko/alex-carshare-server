@@ -4,20 +4,24 @@ import {
   Entity,
   Index,
   ObjectID,
-  ObjectIdColumn,
-  PrimaryColumn
+  ObjectIdColumn
 } from 'typeorm';
+import { Transform } from 'class-transformer';
 
-@Index('cars_pkey', ['id', 'vin'], { unique: true })
+export enum Transmission {
+  MANUAL = 'manual',
+  AUTOMATIC = 'automatic',
+  ROBOTIC = 'robotic'
+}
+
+@Index('cars_pkey', ['vin'], { unique: true })
 @Entity('cars')
 export class Car extends BaseEntity {
   @ObjectIdColumn()
+  @Transform(({ value }) => value.toString(), { toPlainOnly: true })
   _id: ObjectID;
 
-  @PrimaryColumn()
-  id: string;
-
-  @Column({ type: 'text', name: 'vin', unique: true })
+  @Column({ type: 'text', name: 'vin', unique: true, length: 17 })
   vin: string;
 
   @Column({ type: 'text', name: 'brand' })
@@ -27,13 +31,13 @@ export class Car extends BaseEntity {
   model: string;
 
   @Column({ type: 'double', name: 'engineCapacity' })
-  engineCapacity: string;
+  engineCapacity: number;
 
-  @Column({ type: 'text', name: 'transmission' })
-  transmission: string;
+  @Column({ type: 'enum', enum: Transmission, name: 'transmission' })
+  transmission: Transmission;
 
-  @Column({ type: 'double', name: 'mileage' })
-  mileage: string;
+  @Column({ type: 'integer', name: 'mileage' })
+  mileage: number;
 
   @Column({ type: 'text', name: 'exteriorColor' })
   exteriorColor: string;
