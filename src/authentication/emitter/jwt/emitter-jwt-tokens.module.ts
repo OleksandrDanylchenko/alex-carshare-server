@@ -17,6 +17,7 @@ import { EmitterJwtStrategy } from './emitter-jwt-strategy';
     })
   ],
   controllers: [],
-  providers: [EmitterJwtStrategy, EmitterJwtTokensService]
+  providers: [EmitterJwtStrategy, EmitterJwtTokensService],
+  exports: [EmitterJwtTokensService]
 })
 export class EmitterJwtTokensModule {}

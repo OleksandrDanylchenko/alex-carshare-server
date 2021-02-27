@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { SignOptions } from 'jsonwebtoken';
-import { Car } from '../../../models/cars/entities/car.entity';
+import { CarEntity } from '../../../models/cars/serializers/car.serializer';
 
 @Injectable()
 export class EmitterJwtTokensService {
   constructor(private readonly jwtService: JwtService) {}
 
-  async generateAccessToken(car: Car): Promise<string> {
+  async generateAccessToken(car: CarEntity): Promise<string> {
     const carJwtData = {
       id: car._id.toString(),
       vin: car.vin

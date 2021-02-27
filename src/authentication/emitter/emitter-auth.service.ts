@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { CarsRepository } from '../../models/cars/cars.repository';
-import { Car } from '../../models/cars/entities/car.entity';
 import { compareValues } from '../../common/utils/hashing.helper';
+import { CarsService } from '../../models/cars/cars.service';
+import { CarEntity } from '../../models/cars/serializers/car.serializer';
 
 @Injectable()
 export class EmitterAuthService {
-  constructor(private readonly carsRepository: CarsRepository) {}
+  constructor(private readonly carsService: CarsService) {}
 
-  async validateExistingCar(vin: string, password: string): Promise<Car> {
-    const car = await this.carsRepository.getOneWhere({ vin });
+  async validateExistingCar(vin: string, password: string): Promise<CarEntity> {
+    const car = await this.carsService.getByVin(vin);
     if (!car) {
       return null;
     }
