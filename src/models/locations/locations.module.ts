@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
+import { LocationsGateway } from './locations.gateway';
 
 @Module({
   controllers: [],
-  providers: [],
+  providers: [LocationsGateway],
   exports: []
 })
 export class LocationsModule {}

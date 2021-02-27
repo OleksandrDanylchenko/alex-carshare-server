@@ -12,10 +12,10 @@ import { EmitterAuthModule } from './authentication/emitter/emitter-auth.module'
     AppConfigModule,
     AuthConfigModule,
     CarsModule,
-    LocationsModule,
     MongoDbConfigModule,
     MongoDbDatabaseProviderModule,
-    EmitterAuthModule
+    EmitterAuthModule,
+    LocationsModule
   ],
   controllers: [],
   providers: []
