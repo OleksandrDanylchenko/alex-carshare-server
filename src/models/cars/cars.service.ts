@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CarsRepository } from './cars.repository';
 import { CarEntity } from './serializers/car.serializer';
 import { CreateCarDto } from './dtos/create-car.dto';
+import { generate } from 'generate-password';
 
 @Injectable()
 export class CarsService {
@@ -33,7 +34,11 @@ export class CarsService {
   }
 
   async create(inputs: CreateCarDto): Promise<CarEntity> {
-    const newCar = await this.carsRepository.createEntity(inputs);
+    const passwordLength = 12;
+    const carPassword = generate({ length: passwordLength });
+    const savingCarDto = { ...inputs, password: carPassword };
+
+    const newCar = await this.carsRepository.createEntity(savingCarDto);
     return this.carsRepository.transform(newCar);
   }
 }

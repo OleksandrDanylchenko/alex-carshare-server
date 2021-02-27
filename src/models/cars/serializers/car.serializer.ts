@@ -4,7 +4,7 @@ import { Expose } from 'class-transformer';
 import { Transmission } from '../entities/car.entity';
 
 export const defaultCarGroups: string[] = [];
-export const allCarGroups: string[] = [...defaultCarGroups];
+export const allCarGroups: string[] = [...defaultCarGroups, 'car.password'];
 
 export class CarEntity extends ModelEntity implements ICar {
   @Expose()
@@ -12,6 +12,9 @@ export class CarEntity extends ModelEntity implements ICar {
 
   @Expose()
   vin: string;
+
+  @Expose({ groups: ['car.password'] })
+  password: string;
 
   @Expose()
   brand: string;

@@ -43,6 +43,7 @@
     "bcrypt": "^5.0.0",
     "class-transformer": "^0.3.1",
     "class-validator": "^0.12.2",
+    "generate-password": "^1.6.0",
     "helmet": "^4.3.1",
     "mongodb": "^3.6.3",
     "passport": "^0.4.1",

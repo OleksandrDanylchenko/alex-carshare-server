@@ -24,6 +24,9 @@ export class Car extends BaseEntity {
   @Column({ type: 'text', name: 'vin', unique: true, length: 17 })
   vin: string;
 
+  @Column({ type: 'text', name: 'password', length: 12 })
+  password: string;
+
   @Column({ type: 'text', name: 'brand' })
   brand: string;
 

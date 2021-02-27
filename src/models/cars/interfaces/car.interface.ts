@@ -1,5 +1,6 @@
 export interface ICar {
   vin: string;
+  password: string;
   brand: string;
   model: string;
   engineCapacity: number;
