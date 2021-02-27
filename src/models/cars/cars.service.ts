@@ -4,6 +4,7 @@ import { CarsRepository } from './cars.repository';
 import { CarEntity } from './serializers/car.serializer';
 import { CreateCarDto } from './dtos/create-car.dto';
 import { generate } from 'generate-password';
+import { hashValue } from '../../common/utils/hashing.helper';
 
 @Injectable()
 export class CarsService {
@@ -36,7 +37,8 @@ export class CarsService {
   async create(inputs: CreateCarDto): Promise<CarEntity> {
     const passwordLength = 12;
     const carPassword = generate({ length: passwordLength });
-    const savingCarDto = { ...inputs, password: carPassword };
+    const hashedPassword = await hashValue(carPassword);
+    const savingCarDto = { ...inputs, password: hashedPassword };
 
     const newCar = await this.carsRepository.createEntity(savingCarDto);
     return this.carsRepository.transform(newCar);
