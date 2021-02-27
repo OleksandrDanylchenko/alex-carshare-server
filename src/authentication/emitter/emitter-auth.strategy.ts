@@ -17,7 +17,9 @@ export class EmitterAuthStrategy extends PassportStrategy(LocalStrategy) {
   ): Promise<CarEntity> {
     const car = await this.authService.validateExistingCar(vin, password);
     if (!car) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException(
+        'Car with provided VIN number or password cannot be found'
+      );
     }
     return car;
   }
