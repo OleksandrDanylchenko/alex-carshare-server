@@ -7,14 +7,10 @@ import { CarEntity } from '../../models/cars/serializers/car.serializer';
 @Injectable()
 export class EmitterAuthStrategy extends PassportStrategy(LocalStrategy) {
   constructor(private readonly authService: EmitterAuthService) {
-    super({ usernameField: 'vin', passReqToCallback: true });
+    super({ usernameField: 'vin' });
   }
 
-  async validate(
-    req: Request,
-    vin: string,
-    password: string
-  ): Promise<CarEntity> {
+  async validate(vin: string, password: string): Promise<CarEntity> {
     const car = await this.authService.validateExistingCar(vin, password);
     if (!car) {
       throw new UnauthorizedException(
