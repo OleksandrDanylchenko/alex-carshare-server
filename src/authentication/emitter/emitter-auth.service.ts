@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { compareValues } from '../../common/utils/hashing.helper';
 import { CarsService } from '../../models/cars/cars.service';
 import { CarEntity } from '../../models/cars/serializers/car.serializer';
 
@@ -13,7 +12,8 @@ export class EmitterAuthService {
       return null;
     }
 
-    const isPasswordMatching = await compareValues(password, car.password);
+    // const isPasswordMatching = await compareValues(password, car.password);
+    const isPasswordMatching = password === car.password;
     if (isPasswordMatching) {
       return car;
     }

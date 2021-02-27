@@ -3,11 +3,13 @@ import { Request } from 'express';
 import { EmitterJwtTokensService } from './jwt/emitter-jwt-tokens.service';
 import { LocalAuthGuard } from '../common/guards/local-auth.guard';
 import { CarEntity } from '../../models/cars/serializers/car.serializer';
+import { Public } from '../../common/decorators/routes-privacy.decorator';
 
 @Controller('/authentication/emitter')
 export class EmitterAuthController {
   constructor(private tokenService: EmitterJwtTokensService) {}
 
+  @Public()
   @UseGuards(LocalAuthGuard)
   @Post('/authenticate')
   async login(@Req() req: Request): Promise<string> {
