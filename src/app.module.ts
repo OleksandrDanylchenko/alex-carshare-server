@@ -8,6 +8,7 @@ import { CarsModule } from './models/cars/cars.module';
 import { EmitterAuthModule } from './authentication/emitter/emitter-auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './authentication/common/guards/jwt-auth.guard';
+import { IndicatorsGateway } from './models/indicators/indicators.gateway';
 
 @Module({
   imports: [
@@ -17,7 +18,8 @@ import { JwtAuthGuard } from './authentication/common/guards/jwt-auth.guard';
     MongoDbConfigModule,
     MongoDbDatabaseProviderModule,
     EmitterAuthModule,
-    LocationsModule
+    LocationsModule,
+    IndicatorsGateway
   ],
   controllers: [],
   providers: [
