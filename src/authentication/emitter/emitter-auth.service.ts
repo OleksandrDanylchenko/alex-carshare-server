@@ -7,7 +7,7 @@ export class EmitterAuthService {
   constructor(private readonly carsService: CarsService) {}
 
   async validateExistingCar(vin: string, password: string): Promise<CarEntity> {
-    const car = await this.carsService.getByVin(vin);
+    const car = await this.carsService.getByVin(vin.toUpperCase());
     if (!car) {
       return null;
     }
