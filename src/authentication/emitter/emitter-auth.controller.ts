@@ -12,11 +12,17 @@ export class EmitterAuthController {
   @Public()
   @UseGuards(LocalAuthGuard)
   @Post('/authenticate')
-  async login(@Req() req: Request): Promise<{ emitterToken: string }> {
+  async authenticate(@Req() req: Request): Promise<{ emitterToken: string }> {
     const authenticatedCar = req.user as CarEntity;
     const emitterToken = await this.tokenService.generateAccessToken(
       authenticatedCar
     );
     return { emitterToken };
+  }
+
+  @UseGuards(LocalAuthGuard)
+  @Post('/unauthenticate')
+  async unauthenticate(): Promise<{ isUnauthenticated: boolean }> {
+    return { isUnauthenticated: true };
   }
 }
