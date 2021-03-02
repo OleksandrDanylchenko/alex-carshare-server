@@ -10,13 +10,11 @@ export interface IEmitterJwtPayload {
   vin: string;
 }
 
-export interface IEmitterJwtContent {
-  carId: string;
-  vin: string;
-}
-
 @Injectable()
-export class EmitterJwtStrategy extends PassportStrategy(Strategy) {
+export class EmitterHttpJwtStrategy extends PassportStrategy(
+  Strategy,
+  'httpJwtStrategy'
+) {
   constructor(
     private authConfigService: AuthConfigService,
     private carsService: CarsService

@@ -5,7 +5,7 @@ import {
 } from '@nestjs/websockets';
 import { Logger, UseGuards } from '@nestjs/common';
 import { Server } from 'socket.io';
-import { JwtHttpAuthGuard } from '../../authentication/common/guards/jwt-http-auth.guard';
+import { HttpJwtAuthGuard } from '../../authentication/common/guards/http-jwt-auth.guard';
 
 enum IndicatorsSocketEvents {
   UPDATE_INDICATORS = 'updateIndicators'
@@ -21,6 +21,6 @@ export class IndicatorsGateway implements OnGatewayInit {
 
   @SubscribeMessage(IndicatorsSocketEvents.UPDATE_INDICATORS)
   handleUpdateLocation(message): void {
-    console.log(message);
+    // console.log(message);
   }
 }
