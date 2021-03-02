@@ -1,7 +1,9 @@
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthConfigService } from '../../../config/authentication/config.service';
+import { CarsService } from '../../../models/cars/cars.service';
+import { CarEntity } from '../../../models/cars/serializers/car.serializer';
 
 export interface IEmitterJwtPayload {
   sub: string;
@@ -15,7 +17,10 @@ export interface IEmitterJwtContent {
 
 @Injectable()
 export class EmitterJwtStrategy extends PassportStrategy(Strategy) {
-  constructor(private authConfigService: AuthConfigService) {
+  constructor(
+    private authConfigService: AuthConfigService,
+    private carsService: CarsService
+  ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
@@ -23,7 +28,13 @@ export class EmitterJwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: IEmitterJwtPayload): Promise<IEmitterJwtContent> {
-    return { carId: payload.sub, vin: payload.vin };
+  async validate(payload: IEmitterJwtPayload): Promise<CarEntity> {
+    const car = await this.carsService.getByVin(payload.vin);
+    if (!car) {
+      throw new UnauthorizedException(
+        `Car with provided ${payload.vin} hasn't been found`
+      );
+    }
+    return car;
   }
 }

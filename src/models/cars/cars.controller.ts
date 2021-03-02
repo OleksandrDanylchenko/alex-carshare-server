@@ -17,7 +17,6 @@ import { CreateCarDto } from './dtos/create-car.dto';
 export class CarsController {
   constructor(private readonly carsService: CarsService) {}
 
-  @Public()
   @Get('/')
   @SerializeOptions({ groups: defaultCarGroups })
   @UseInterceptors(ClassSerializerInterceptor)
@@ -25,7 +24,6 @@ export class CarsController {
     return this.carsService.getAll();
   }
 
-  @Public()
   @Get('/:vin')
   @SerializeOptions({ groups: defaultCarGroups })
   @UseInterceptors(ClassSerializerInterceptor)
@@ -33,7 +31,6 @@ export class CarsController {
     return this.carsService.getByVin(vin, [], true);
   }
 
-  @Public()
   @Post('/')
   @SerializeOptions({ groups: defaultCarGroups })
   @UseInterceptors(ClassSerializerInterceptor)

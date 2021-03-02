@@ -3,8 +3,9 @@ import {
   SubscribeMessage,
   WebSocketGateway
 } from '@nestjs/websockets';
-import { Logger } from '@nestjs/common';
+import { Logger, UseGuards } from '@nestjs/common';
 import { Server } from 'socket.io';
+import { JwtHttpAuthGuard } from '../../authentication/common/guards/jwt-http-auth.guard';
 
 enum IndicatorsSocketEvents {
   UPDATE_INDICATORS = 'updateIndicators'

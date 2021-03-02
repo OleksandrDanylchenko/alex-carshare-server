@@ -3,8 +3,10 @@ import {
   SubscribeMessage,
   WebSocketGateway
 } from '@nestjs/websockets';
-import { Logger } from '@nestjs/common';
+import { Logger, UseGuards } from '@nestjs/common';
 import { Server } from 'socket.io';
+import { JwtHttpAuthGuard } from '../../authentication/common/guards/jwt-http-auth.guard';
+import { Public } from '../../common/decorators/routes-privacy.decorator';
 
 enum LocationsSocketEvents {
   UPDATE_LOCATION = 'updateLocation'
@@ -18,6 +20,7 @@ export class LocationsGateway implements OnGatewayInit {
     this.logger.log('Locations gateway initialized');
   }
 
+  @UseGuards(JwtHttpAuthGuard)
   @SubscribeMessage(LocationsSocketEvents.UPDATE_LOCATION)
   handleUpdateLocation(message: {
     lat: number;
