@@ -20,7 +20,7 @@ export class IndicatorsGateway implements OnGatewayInit {
   }
 
   @SubscribeMessage(IndicatorsSocketEvents.UPDATE_INDICATORS)
-  handleUpdateLocation(message): void {
+  handleUpdateGeodata(message): void {
     // console.log(message);
   }
 }

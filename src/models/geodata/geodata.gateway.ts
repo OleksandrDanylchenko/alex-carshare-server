@@ -7,21 +7,21 @@ import { Logger, UseGuards } from '@nestjs/common';
 import { Server } from 'socket.io';
 import { SocketJwtAuthGuard } from '../../authentication/common/guards/socket-jwt-auth.guard';
 
-enum LocationsSocketEvents {
-  UPDATE_LOCATION = 'updateLocation'
+enum GeodataSocketEvents {
+  UPDATE_GEODATA = 'updateGeodata'
 }
 
-@WebSocketGateway({ namespace: '/locations' })
-export class LocationsGateway implements OnGatewayInit {
-  private logger = new Logger('LocationsGateway');
+@WebSocketGateway({ namespace: '/geodata' })
+export class GeodataGateway implements OnGatewayInit {
+  private logger = new Logger('GeodataGateway');
 
   afterInit(server: Server): any {
-    this.logger.log('Locations gateway initialized');
+    this.logger.log('Geodata gateway initialized');
   }
 
   @UseGuards(SocketJwtAuthGuard)
-  @SubscribeMessage(LocationsSocketEvents.UPDATE_LOCATION)
-  handleUpdateLocation(message: {
+  @SubscribeMessage(GeodataSocketEvents.UPDATE_GEODATA)
+  handleUpdateGeodata(message: {
     lat: number;
     lon: number;
     vin: string;
