@@ -9,6 +9,7 @@ import { PaginationQueryDto } from '../general/dtos/pagination-query-dto';
 import { CreateEmitterDto, UpdateEmitterDto } from './dtos';
 import { Emitter } from './schemas/emitter.schema';
 import { EngineersService } from '../attendantEngineers/engineers.service';
+import { AttendantEngineer } from '../attendantEngineers/schemas/engineer.schema';
 
 @Injectable()
 export class EmittersService {
@@ -28,7 +29,7 @@ export class EmittersService {
   public async findOne(emitterId: Types.ObjectId | string): Promise<Emitter> {
     const engineer = await this.emitterModel
       .findById({ _id: emitterId })
-      .populate('activator', 'name surname activationLogin -_id')
+      .populate('activator', 'name surname activationLogin')
       .exec();
 
     if (!engineer) {
@@ -46,9 +47,7 @@ export class EmittersService {
 
     try {
       let newEmitterModel = new this.emitterModel(createEmitterDto);
-      newEmitterModel = await newEmitterModel.save({
-        session: session
-      });
+      newEmitterModel = await newEmitterModel.save({ session });
 
       await this.addEmitterForEngineer(
         newEmitterModel._id,
@@ -71,19 +70,21 @@ export class EmittersService {
     updateEmitterDto: UpdateEmitterDto
   ): Promise<Emitter> {
     try {
-      const existingEmitter = await this.emitterModel.findByIdAndUpdate(
-        { _id: emitterId },
-        updateEmitterDto,
-        { new: true }
-      );
+      const existingEmitter = await this.findOne(emitterId);
+      const previousEngineerId = (existingEmitter.activator as AttendantEngineer)._id.toHexString();
 
-      if (!existingEmitter) {
-        throw new NotFoundException(
-          `Emitter with id: ${emitterId} wasn't found!`
+      if (
+        updateEmitterDto.activator &&
+        updateEmitterDto.activator !== previousEngineerId
+      ) {
+        await this.substituteEmitterEngineers(
+          existingEmitter._id,
+          previousEngineerId,
+          updateEmitterDto.activator
         );
       }
 
-      return existingEmitter;
+      return await existingEmitter.update(updateEmitterDto);
     } catch (error) {
       throw new BadRequestException(error.message);
     }
@@ -116,9 +117,11 @@ export class EmittersService {
     engineerId: Types.ObjectId
   ): Promise<void> {
     const engineer = await this.engineersService.findOne(engineerId);
-    engineer.activatedEmitters = (engineer.activatedEmitters as Types.ObjectId[]).filter(
-      (activatedEmitterId) => activatedEmitterId !== emitterId
-    );
+
+    const activatedEmitters = engineer.activatedEmitters as Types.ObjectId[];
+    activatedEmitters.splice(activatedEmitters.indexOf(emitterId), 1);
+
+    engineer.activatedEmitters = activatedEmitters;
     await this.engineersService.update(engineer._id, engineer);
   }
 }
