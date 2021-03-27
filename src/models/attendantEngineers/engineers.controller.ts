@@ -29,26 +29,22 @@ export class EngineersController {
   public async getEngineer(
     @Param('id') engineerId: string
   ): Promise<AttendantEngineer> {
-    const engineer = await this.engineersService.findOne(engineerId);
-    if (!engineer) {
-      throw new NotFoundException('Customer does not exist!');
-    }
-    return engineer;
+    return this.engineersService.findOne(engineerId);
   }
 
   @Post()
-  public async addCustomer(
+  public async addEngineer(
     @Body() createEngineerDto: CreateEngineerDto
   ): Promise<AttendantEngineer> {
     return this.engineersService.create(createEngineerDto);
   }
 
   @Put('/:id')
-  public async updateCustomer(
-    @Param('id') customerId: string,
+  public async updateEngineer(
+    @Param('id') engineerId: string,
     @Body() updateEngineerDto: UpdateEngineerDto
   ): Promise<AttendantEngineer> {
-    return this.engineersService.update(customerId, updateEngineerDto);
+    return this.engineersService.update(engineerId, updateEngineerDto);
   }
 
   @Delete('/:id')

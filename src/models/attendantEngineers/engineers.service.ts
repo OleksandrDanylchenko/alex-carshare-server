@@ -5,6 +5,7 @@ import { Model } from 'mongoose';
 import { PaginationQueryDto } from '../general/dtos/pagination-query-dto';
 import { CreateEngineerDto } from './dtos';
 import { UpdateEngineerDto } from './dtos';
+import { createHash } from '../../common/utils/hashing.helper';
 
 @Injectable()
 export class EngineersService {
@@ -17,17 +18,18 @@ export class EngineersService {
     paginationQuery: PaginationQueryDto
   ): Promise<AttendantEngineer[]> {
     const { limit, offset } = paginationQuery;
-
     return this.engineerModel.find().skip(offset).limit(limit).exec();
   }
 
-  public async findOne(customerId: string): Promise<AttendantEngineer> {
+  public async findOne(engineerId: string): Promise<AttendantEngineer> {
     const engineer = await this.engineerModel
-      .findById({ _id: customerId })
+      .findById({ _id: engineerId })
       .exec();
 
     if (!engineer) {
-      throw new NotFoundException(`Engineer #${customerId} not found`);
+      throw new NotFoundException(
+        `Engineer with id: ${engineerId} wasn't found!`
+      );
     }
 
     return engineer;
@@ -36,8 +38,17 @@ export class EngineersService {
   public async create(
     createEngineerDto: CreateEngineerDto
   ): Promise<AttendantEngineer> {
-    const newCustomer = new this.engineerModel(createEngineerDto);
-    return newCustomer.save();
+    const hashedPassword = await createHash(
+      createEngineerDto.activationPassword
+    );
+
+    const newEngineer = {
+      ...createEngineerDto,
+      activationPassword: hashedPassword
+    };
+
+    const newEngineerModel = new this.engineerModel(newEngineer);
+    return newEngineerModel.save();
   }
 
   public async update(
