@@ -11,7 +11,8 @@ import { MongooseModule, MongooseModuleOptions } from '@nestjs/mongoose';
         dbName: mongodbConfigService.databaseName,
         uri: mongodbConfigService.connectionString,
         useUnifiedTopology: true,
-        useNewUrlParser: true
+        useNewUrlParser: true,
+        useFindAndModify: false
       }),
       inject: [MongodbConfigService]
     } as MongooseModuleOptions)

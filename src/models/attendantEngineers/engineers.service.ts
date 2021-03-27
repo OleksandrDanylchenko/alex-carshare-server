@@ -3,9 +3,9 @@ import { InjectModel } from '@nestjs/mongoose';
 import { AttendantEngineer } from './schemas/engineer.schema';
 import { Model } from 'mongoose';
 import { PaginationQueryDto } from '../general/dtos/pagination-query-dto';
-import { CreateEngineerDto } from './dtos';
-import { UpdateEngineerDto } from './dtos';
+import { CreateEngineerDto, UpdateEngineerDto } from './dtos';
 import { createHash } from '../../common/utils/hashing.helper';
+import { IEngineer } from './interfaces/engineer.interface';
 
 @Injectable()
 export class EngineersService {
@@ -38,16 +38,8 @@ export class EngineersService {
   public async create(
     createEngineerDto: CreateEngineerDto
   ): Promise<AttendantEngineer> {
-    const hashedPassword = await createHash(
-      createEngineerDto.activationPassword
-    );
-
-    const newEngineer = {
-      ...createEngineerDto,
-      activationPassword: hashedPassword
-    };
-
-    const newEngineerModel = new this.engineerModel(newEngineer);
+    const hashedEngineer = await this.hashActivationPassword(createEngineerDto);
+    const newEngineerModel = new this.engineerModel(hashedEngineer);
     return newEngineerModel.save();
   }
 
@@ -55,19 +47,35 @@ export class EngineersService {
     engineerId: string,
     updateEngineerDto: UpdateEngineerDto
   ): Promise<AttendantEngineer> {
+    const hashedEngineer = await this.hashActivationPassword(updateEngineerDto);
+
     const existingEngineer = await this.engineerModel.findByIdAndUpdate(
       { _id: engineerId },
-      updateEngineerDto
+      hashedEngineer,
+      { new: true }
     );
 
     if (!existingEngineer) {
-      throw new NotFoundException(`Customer #${engineerId} not found`);
+      throw new NotFoundException(
+        `Engineer with id: ${engineerId} wasn't found!`
+      );
     }
 
     return existingEngineer;
   }
 
-  public async remove(customerId: string): Promise<any> {
+  public async hashActivationPassword(
+    engineerDto: Partial<IEngineer>
+  ): Promise<Partial<IEngineer>> {
+    if (!engineerDto.activationPassword) {
+      return engineerDto;
+    }
+
+    const hashedPassword = await createHash(engineerDto.activationPassword);
+    return { ...engineerDto, activationPassword: hashedPassword };
+  }
+
+  async remove(customerId: string): Promise<any> {
     return this.engineerModel.findByIdAndRemove(customerId);
   }
 }

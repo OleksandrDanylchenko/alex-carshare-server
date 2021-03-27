@@ -1,6 +1,7 @@
 import { IsNotEmpty, IsString } from 'class-validator';
+import { IEngineer } from '../interfaces/engineer.interface';
 
-export class CreateEngineerDto {
+export class CreateEngineerDto implements IEngineer {
   @IsString()
   @IsNotEmpty()
   readonly name: string;
