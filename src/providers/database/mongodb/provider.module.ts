@@ -1,27 +1,20 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule, TypeOrmModuleAsyncOptions } from '@nestjs/typeorm';
 import { MongoDbConfigModule } from '../../../config/database/mongodb/config.module';
 import { MongodbConfigService } from '../../../config/database/mongodb/config.service';
+import { MongooseModule, MongooseModuleOptions } from '@nestjs/mongoose';
 
 @Module({
   imports: [
-    TypeOrmModule.forRootAsync({
+    MongooseModule.forRootAsync({
       imports: [MongoDbConfigModule],
-      useFactory: async (mongodbConfigService: MongodbConfigService) => ({
-        type: mongodbConfigService.connection,
-        url: mongodbConfigService.connectionString,
-        database: mongodbConfigService.database,
-        logging: mongodbConfigService.logging,
-        synchronize: mongodbConfigService.synchronize,
-        migrationsRun: mongodbConfigService.migrationsRun,
-        entities: mongodbConfigService.entities,
-        migrations: mongodbConfigService.migrations,
-        ssl: true,
+      useFactory: (mongodbConfigService: MongodbConfigService) => ({
+        dbName: mongodbConfigService.databaseName,
+        uri: mongodbConfigService.connectionString,
         useUnifiedTopology: true,
         useNewUrlParser: true
       }),
       inject: [MongodbConfigService]
-    } as TypeOrmModuleAsyncOptions)
+    } as MongooseModuleOptions)
   ]
 })
 export class MongoDbDatabaseProviderModule {}
