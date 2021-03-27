@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { PaginationQueryDto } from '../general/dtos/pagination-query-dto';
@@ -37,36 +41,44 @@ export class EmittersService {
   }
 
   public async create(createEmitterDto: CreateEmitterDto): Promise<Emitter> {
-    const engineer = await this.engineersService.findOne(
-      createEmitterDto.activator
-    );
+    try {
+      const engineer = await this.engineersService.findOne(
+        createEmitterDto.activator.toHexString()
+      );
 
-    let newEmitterModel = new this.emitterModel(createEmitterDto);
-    newEmitterModel = await newEmitterModel.save();
+      let newEmitterModel = new this.emitterModel(createEmitterDto);
+      newEmitterModel = await newEmitterModel.save();
 
-    engineer.activatedEmitters.push(newEmitterModel._id);
-    await this.engineersService.update(engineer._id, engineer);
+      engineer.activatedEmitters.push(newEmitterModel._id);
+      await this.engineersService.update(engineer._id, engineer);
 
-    return newEmitterModel;
+      return newEmitterModel;
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
   public async update(
     emitterId: string,
     updateEmitterDto: UpdateEmitterDto
   ): Promise<Emitter> {
-    const existingEmitter = await this.emitterModel.findByIdAndUpdate(
-      { _id: emitterId },
-      updateEmitterDto,
-      { new: true }
-    );
-
-    if (!existingEmitter) {
-      throw new NotFoundException(
-        `Emitter with id: ${emitterId} wasn't found!`
+    try {
+      const existingEmitter = await this.emitterModel.findByIdAndUpdate(
+        { _id: emitterId },
+        updateEmitterDto,
+        { new: true }
       );
-    }
 
-    return existingEmitter;
+      if (!existingEmitter) {
+        throw new NotFoundException(
+          `Emitter with id: ${emitterId} wasn't found!`
+        );
+      }
+
+      return existingEmitter;
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
   async remove(emitterId: string): Promise<any> {

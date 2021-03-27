@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { AttendantEngineer } from './schemas/engineer.schema';
 import { Model } from 'mongoose';
@@ -39,30 +43,42 @@ export class EngineersService {
   public async create(
     createEngineerDto: CreateEngineerDto
   ): Promise<AttendantEngineer> {
-    const hashedEngineer = await this.hashActivationPassword(createEngineerDto);
-    const newEngineerModel = new this.engineerModel(hashedEngineer);
-    return newEngineerModel.save();
+    try {
+      const hashedEngineer = await this.hashActivationPassword(
+        createEngineerDto
+      );
+      const newEngineerModel = new this.engineerModel(hashedEngineer);
+      return newEngineerModel.save();
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
   public async update(
     engineerId: string,
     updateEngineerDto: UpdateEngineerDto
   ): Promise<AttendantEngineer> {
-    const hashedEngineer = await this.hashActivationPassword(updateEngineerDto);
-
-    const existingEngineer = await this.engineerModel.findByIdAndUpdate(
-      { _id: engineerId },
-      hashedEngineer,
-      { new: true }
-    );
-
-    if (!existingEngineer) {
-      throw new NotFoundException(
-        `Engineer with id: ${engineerId} wasn't found!`
+    try {
+      const hashedEngineer = await this.hashActivationPassword(
+        updateEngineerDto
       );
-    }
 
-    return existingEngineer;
+      const existingEngineer = await this.engineerModel.findByIdAndUpdate(
+        { _id: engineerId },
+        hashedEngineer,
+        { new: true }
+      );
+
+      if (!existingEngineer) {
+        throw new NotFoundException(
+          `Engineer with id: ${engineerId} wasn't found!`
+        );
+      }
+
+      return existingEngineer;
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
   public async hashActivationPassword(
