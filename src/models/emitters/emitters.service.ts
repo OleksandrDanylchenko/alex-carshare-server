@@ -4,12 +4,14 @@ import { Model } from 'mongoose';
 import { PaginationQueryDto } from '../general/dtos/pagination-query-dto';
 import { CreateEmitterDto, UpdateEmitterDto } from './dtos';
 import { Emitter } from './schemas/emitter.schema';
+import { EngineersService } from '../attendantEngineers/engineers.service';
 
 @Injectable()
 export class EmittersService {
   constructor(
     @InjectModel(Emitter.name)
-    private readonly emitterModel: Model<Emitter>
+    private readonly emitterModel: Model<Emitter>,
+    private readonly engineersService: EngineersService
   ) {}
 
   public async findAll(
@@ -22,7 +24,7 @@ export class EmittersService {
   public async findOne(emitterId: string): Promise<Emitter> {
     const engineer = await this.emitterModel
       .findById({ _id: emitterId })
-      .populate('activator')
+      .populate('activator', 'name surname activationLogin -_id')
       .exec();
 
     if (!engineer) {
@@ -35,9 +37,17 @@ export class EmittersService {
   }
 
   public async create(createEmitterDto: CreateEmitterDto): Promise<Emitter> {
-    debugger;
-    const newEmitterModel = new this.emitterModel(createEmitterDto);
-    return newEmitterModel.save();
+    const engineer = await this.engineersService.findOne(
+      createEmitterDto.activator
+    );
+
+    let newEmitterModel = new this.emitterModel(createEmitterDto);
+    newEmitterModel = await newEmitterModel.save();
+
+    engineer.activatedEmitters.push(newEmitterModel._id);
+    await this.engineersService.update(engineer._id, engineer);
+
+    return newEmitterModel;
   }
 
   public async update(

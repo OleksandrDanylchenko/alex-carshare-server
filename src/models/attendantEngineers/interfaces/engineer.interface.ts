@@ -3,4 +3,5 @@ export interface IEngineer {
   readonly surname: string;
   readonly activationLogin: string;
   readonly activationPassword: string;
+  readonly activatedEmitters: string[];
 }

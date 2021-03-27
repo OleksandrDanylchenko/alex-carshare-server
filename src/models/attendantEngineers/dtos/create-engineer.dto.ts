@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { IEngineer } from '../interfaces/engineer.interface';
 
 export class CreateEngineerDto implements IEngineer {
@@ -17,4 +17,9 @@ export class CreateEngineerDto implements IEngineer {
   @IsString()
   @IsNotEmpty()
   readonly activationPassword: string;
+
+  @IsArray()
+  @IsString({ each: true })
+  @IsOptional()
+  readonly activatedEmitters: string[];
 }

@@ -24,6 +24,7 @@ export class EngineersService {
   public async findOne(engineerId: string): Promise<AttendantEngineer> {
     const engineer = await this.engineerModel
       .findById({ _id: engineerId })
+      .populate('activatedEmitters')
       .exec();
 
     if (!engineer) {
