@@ -70,28 +70,31 @@ export class EmittersService {
     updateEmitterDto: UpdateEmitterDto
   ): Promise<Emitter> {
     try {
-      const existingEmitter = await this.findOne(emitterId);
-      const previousEngineerId = (existingEmitter.activator as AttendantEngineer)._id.toHexString();
+      const emitter = await this.findOne(emitterId);
+      const previousEngineerId = (emitter.activator as AttendantEngineer)._id.toHexString();
 
       if (
         updateEmitterDto.activator &&
         updateEmitterDto.activator !== previousEngineerId
       ) {
         await this.substituteEmitterEngineers(
-          existingEmitter._id,
+          emitter._id,
           previousEngineerId,
           updateEmitterDto.activator
         );
       }
 
-      return await existingEmitter.update(updateEmitterDto);
+      return await emitter.update(updateEmitterDto);
     } catch (error) {
       throw new BadRequestException(error.message);
     }
   }
 
   public async remove(emitterId: string): Promise<any> {
-    return this.emitterModel.findByIdAndRemove(emitterId);
+    const emitter = await this.findOne(emitterId);
+    const engineerId = (emitter.activator as AttendantEngineer)._id.toHexString();
+    await this.removeEmitterForEngineer(emitter._id, engineerId);
+    return emitter.delete();
   }
 
   private async addEmitterForEngineer(

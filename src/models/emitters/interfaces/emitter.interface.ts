@@ -5,6 +5,4 @@ export interface IEmitter {
   readonly emitterId: string;
   readonly activator: Types.ObjectId | AttendantEngineer;
   readonly batteryLevel?: number;
-  readonly activatedAt?: Date;
-  readonly deactivatedAt?: Date;
 }

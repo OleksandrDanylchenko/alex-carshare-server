@@ -20,9 +20,6 @@ export class Emitter extends Document implements IEmitter {
 
   @Prop()
   readonly activatedAt: Date;
-
-  @Prop({ default: null })
-  readonly deactivatedAt: Date | null;
 }
 
 export const EmitterSchema = SchemaFactory.createForClass(Emitter);
