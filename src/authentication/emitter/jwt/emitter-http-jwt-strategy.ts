@@ -22,7 +22,7 @@ export class EmitterHttpJwtStrategy extends PassportStrategy(
     private engineersService: EngineersService
   ) {
     super({
-      jwtFromRequest: ExtractJwt.fromUrlQueryParameter('emitterToken'),
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: true,
       secretOrKey: authConfigService.jwtSecret
     });

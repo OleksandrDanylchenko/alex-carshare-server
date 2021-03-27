@@ -17,8 +17,11 @@ export class EmitterAuthStrategy extends PassportStrategy(LocalStrategy) {
     password: string
   ): Promise<AttendantEngineer> {
     debugger;
-    const car = await this.authService.validateExistingCar(login, password);
-    if (!car) {
+    const engineer = await this.authService.validateExistingEngineer(
+      login,
+      password
+    );
+    if (!engineer) {
       if (req.path.includes('/sign-in')) {
         throw new UnauthorizedException(
           'Car with provided VIN number or password cannot be found'
@@ -29,6 +32,6 @@ export class EmitterAuthStrategy extends PassportStrategy(LocalStrategy) {
         );
       }
     }
-    return car;
+    return engineer;
   }
 }

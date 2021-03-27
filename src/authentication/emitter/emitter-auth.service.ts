@@ -7,7 +7,7 @@ import { compareHash } from '../../common/utils/hashing.helper';
 export class EmitterAuthService {
   constructor(private readonly engineersService: EngineersService) {}
 
-  async validateExistingCar(
+  async validateExistingEngineer(
     login: string,
     password: string
   ): Promise<AttendantEngineer> {
