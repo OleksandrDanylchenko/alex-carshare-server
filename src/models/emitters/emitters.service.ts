@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { PaginationQueryDto } from '../general/dtos/pagination-query-dto';
+import { PaginationQueryDto } from '../common/dtos/pagination-query-dto';
 import { CreateEmitterDto, UpdateEmitterDto } from './dtos';
 import { Emitter } from './schemas/emitter.schema';
 import { EngineersService } from '../attendantEngineers/engineers.service';
@@ -101,7 +101,7 @@ export class EmittersService {
     emitterId: Types.ObjectId,
     engineerId: Types.ObjectId
   ): Promise<void> {
-    const engineer = await this.engineersService.findOne(engineerId);
+    const engineer = await this.engineersService.findById(engineerId);
     (engineer.activatedEmitters as Types.ObjectId[]).push(emitterId);
     await this.engineersService.update(engineer._id, engineer);
   }
@@ -119,7 +119,7 @@ export class EmittersService {
     emitterId: Types.ObjectId,
     engineerId: Types.ObjectId
   ): Promise<void> {
-    const engineer = await this.engineersService.findOne(engineerId);
+    const engineer = await this.engineersService.findById(engineerId);
 
     const activatedEmitters = engineer.activatedEmitters as Types.ObjectId[];
     activatedEmitters.splice(activatedEmitters.indexOf(emitterId), 1);

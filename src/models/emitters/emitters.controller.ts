@@ -9,7 +9,7 @@ import {
   Query
 } from '@nestjs/common';
 import { EmittersService } from './emitters.service';
-import { PaginationQueryDto } from '../general/dtos/pagination-query-dto';
+import { PaginationQueryDto } from '../common/dtos/pagination-query-dto';
 import { CreateEmitterDto, UpdateEmitterDto } from './dtos';
 import { Emitter } from './schemas/emitter.schema';
 

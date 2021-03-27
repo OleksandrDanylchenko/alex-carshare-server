@@ -6,7 +6,7 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { AttendantEngineer } from './schemas/engineer.schema';
 import { Model, Types } from 'mongoose';
-import { PaginationQueryDto } from '../general/dtos/pagination-query-dto';
+import { PaginationQueryDto } from '../common/dtos/pagination-query-dto';
 import { CreateEngineerDto, UpdateEngineerDto } from './dtos';
 import { createHash } from '../../common/utils/hashing.helper';
 import { IEngineer } from './interfaces/engineer.interface';
@@ -18,18 +18,11 @@ export class EngineersService {
     private readonly engineerModel: Model<AttendantEngineer>
   ) {}
 
-  public async findAll(
-    paginationQuery: PaginationQueryDto
-  ): Promise<AttendantEngineer[]> {
-    const { limit, offset } = paginationQuery;
-    return this.engineerModel.find().skip(offset).limit(limit).exec();
-  }
-
-  public async findOne(
+  public async findById(
     engineerId: Types.ObjectId | string
   ): Promise<AttendantEngineer> {
     const engineer = await this.engineerModel
-      .findById({ _id: engineerId })
+      .findOne({ _id: engineerId })
       .populate('activatedEmitters')
       .exec();
 
@@ -40,6 +33,20 @@ export class EngineersService {
     }
 
     return engineer;
+  }
+
+  public async findOneWhere(
+    where: Record<string, unknown>
+  ): Promise<AttendantEngineer> {
+    return this.engineerModel.findOne(where).exec();
+  }
+
+  public async findWhere(
+    where: Record<string, unknown>,
+    paginationQuery: PaginationQueryDto
+  ): Promise<AttendantEngineer[]> {
+    const { limit, offset } = paginationQuery;
+    return this.engineerModel.find(where).skip(offset).limit(limit).exec();
   }
 
   public async create(

@@ -6,6 +6,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { HttpJwtAuthGuard } from './authentication/common/guards/http-jwt-auth.guard';
 import { EngineersModule } from './models/attendantEngineers/engineers.module';
 import { EmittersModule } from './models/emitters/emitters.module';
+import { EmitterAuthModule } from './authentication/emitter/emitter-auth.module';
 
 @Module({
   imports: [
@@ -13,9 +14,15 @@ import { EmittersModule } from './models/emitters/emitters.module';
     MongoDbConfigModule,
     MongoDbDatabaseProviderModule,
     EngineersModule,
-    EmittersModule
+    EmittersModule,
+    EmitterAuthModule
   ],
   controllers: [],
-  providers: []
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: HttpJwtAuthGuard
+    }
+  ]
 })
 export class AppModule {}
