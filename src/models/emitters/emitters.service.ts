@@ -4,7 +4,7 @@ import {
   NotFoundException
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { PaginationQueryDto } from '../general/dtos/pagination-query-dto';
 import { CreateEmitterDto, UpdateEmitterDto } from './dtos';
 import { Emitter } from './schemas/emitter.schema';
@@ -25,7 +25,7 @@ export class EmittersService {
     return this.emitterModel.find().skip(offset).limit(limit).exec();
   }
 
-  public async findOne(emitterId: string): Promise<Emitter> {
+  public async findOne(emitterId: Types.ObjectId | string): Promise<Emitter> {
     const engineer = await this.emitterModel
       .findById({ _id: emitterId })
       .populate('activator', 'name surname activationLogin -_id')
@@ -41,20 +41,28 @@ export class EmittersService {
   }
 
   public async create(createEmitterDto: CreateEmitterDto): Promise<Emitter> {
+    const session = await this.emitterModel.startSession();
+    session.startTransaction();
+
     try {
-      const engineer = await this.engineersService.findOne(
-        createEmitterDto.activator.toHexString()
+      let newEmitterModel = new this.emitterModel(createEmitterDto);
+      newEmitterModel = await newEmitterModel.save({
+        session: session
+      });
+
+      await this.addEmitterForEngineer(
+        newEmitterModel._id,
+        createEmitterDto.activator
       );
 
-      let newEmitterModel = new this.emitterModel(createEmitterDto);
-      newEmitterModel = await newEmitterModel.save();
-
-      engineer.activatedEmitters.push(newEmitterModel._id);
-      await this.engineersService.update(engineer._id, engineer);
+      await session.commitTransaction();
 
       return newEmitterModel;
     } catch (error) {
+      await session.abortTransaction();
       throw new BadRequestException(error.message);
+    } finally {
+      session.endSession();
     }
   }
 
@@ -81,7 +89,36 @@ export class EmittersService {
     }
   }
 
-  async remove(emitterId: string): Promise<any> {
+  public async remove(emitterId: string): Promise<any> {
     return this.emitterModel.findByIdAndRemove(emitterId);
+  }
+
+  private async addEmitterForEngineer(
+    emitterId: Types.ObjectId,
+    engineerId: Types.ObjectId
+  ): Promise<void> {
+    const engineer = await this.engineersService.findOne(engineerId);
+    (engineer.activatedEmitters as Types.ObjectId[]).push(emitterId);
+    await this.engineersService.update(engineer._id, engineer);
+  }
+
+  private async substituteEmitterEngineers(
+    emitterId: Types.ObjectId,
+    previousEngineerId: Types.ObjectId,
+    newEngineerId: Types.ObjectId
+  ): Promise<void> {
+    await this.removeEmitterForEngineer(emitterId, previousEngineerId);
+    await this.addEmitterForEngineer(emitterId, newEngineerId);
+  }
+
+  private async removeEmitterForEngineer(
+    emitterId: Types.ObjectId,
+    engineerId: Types.ObjectId
+  ): Promise<void> {
+    const engineer = await this.engineersService.findOne(engineerId);
+    engineer.activatedEmitters = (engineer.activatedEmitters as Types.ObjectId[]).filter(
+      (activatedEmitterId) => activatedEmitterId !== emitterId
+    );
+    await this.engineersService.update(engineer._id, engineer);
   }
 }

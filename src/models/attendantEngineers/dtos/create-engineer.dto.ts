@@ -23,5 +23,5 @@ export class CreateEngineerDto implements IEngineer {
   @IsArray()
   @IsString({ each: true })
   @IsOptional()
-  readonly activatedEmitters: Types.ObjectId[] | Emitter[];
+  readonly activatedEmitters: (Types.ObjectId | Emitter)[];
 }

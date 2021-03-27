@@ -6,5 +6,5 @@ export interface IEngineer {
   readonly surname: string;
   readonly activationLogin: string;
   readonly activationPassword: string;
-  readonly activatedEmitters: Types.ObjectId[] | Emitter[];
+  readonly activatedEmitters: (Types.ObjectId | Emitter)[];
 }

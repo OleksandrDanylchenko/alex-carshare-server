@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { AttendantEngineer } from './schemas/engineer.schema';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { PaginationQueryDto } from '../general/dtos/pagination-query-dto';
 import { CreateEngineerDto, UpdateEngineerDto } from './dtos';
 import { createHash } from '../../common/utils/hashing.helper';
@@ -25,7 +25,9 @@ export class EngineersService {
     return this.engineerModel.find().skip(offset).limit(limit).exec();
   }
 
-  public async findOne(engineerId: string): Promise<AttendantEngineer> {
+  public async findOne(
+    engineerId: Types.ObjectId | string
+  ): Promise<AttendantEngineer> {
     const engineer = await this.engineerModel
       .findById({ _id: engineerId })
       .populate('activatedEmitters')

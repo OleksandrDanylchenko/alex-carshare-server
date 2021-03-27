@@ -19,7 +19,7 @@ export class AttendantEngineer extends Document implements IEngineer {
   activationPassword: string;
 
   @Prop({
-    type: [{ type: mongoose.Schema.Types.ObjectId, ref: Emitter.name }],
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Emitter' }],
     default: []
   })
   activatedEmitters: Types.ObjectId[] | Emitter[];

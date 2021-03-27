@@ -11,7 +11,7 @@ export class Emitter extends Document implements IEmitter {
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: AttendantEngineer.name
+    ref: 'AttendantEngineer'
   })
   readonly activator: Types.ObjectId | AttendantEngineer;
 
