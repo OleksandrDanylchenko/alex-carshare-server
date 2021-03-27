@@ -5,13 +5,15 @@ import { MongoDbDatabaseProviderModule } from './providers/database/mongodb/prov
 import { APP_GUARD } from '@nestjs/core';
 import { HttpJwtAuthGuard } from './authentication/common/guards/http-jwt-auth.guard';
 import { EngineersModule } from './models/attendantEngineers/engineers.module';
+import { EmittersModule } from './models/emitters/emitters.module';
 
 @Module({
   imports: [
     AppConfigModule,
     MongoDbConfigModule,
     MongoDbDatabaseProviderModule,
-    EngineersModule
+    EngineersModule,
+    EmittersModule
   ],
   controllers: [],
   providers: []
