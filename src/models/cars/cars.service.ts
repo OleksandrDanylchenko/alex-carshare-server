@@ -52,7 +52,10 @@ export class CarsService {
     }
   }
 
-  public async update(carId: string, updateCarDto: UpdateCarDto): Promise<Car> {
+  public async update(
+    carId: Types.ObjectId | string,
+    updateCarDto: UpdateCarDto
+  ): Promise<Car> {
     try {
       const car = await this.carModel.findByIdAndUpdate(
         { _id: carId },

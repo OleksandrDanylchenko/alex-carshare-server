@@ -21,12 +21,12 @@ export class EmittersController {
   public async getAllEmitters(
     @Query() paginationQuery: PaginationQueryDto
   ): Promise<Emitter[]> {
-    return this.emittersService.findAll(paginationQuery);
+    return this.emittersService.findWhere({}, paginationQuery);
   }
 
   @Get('/:id')
   public async getEmitter(@Param('id') emitterId: string): Promise<Emitter> {
-    return this.emittersService.findOne(emitterId);
+    return this.emittersService.findById(emitterId);
   }
 
   @Post()

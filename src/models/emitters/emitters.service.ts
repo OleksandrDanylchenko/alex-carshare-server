@@ -19,58 +19,54 @@ export class EmittersService {
     private readonly engineersService: EngineersService
   ) {}
 
-  public async findAll(
-    paginationQuery: PaginationQueryDto
-  ): Promise<Emitter[]> {
-    const { limit, offset } = paginationQuery;
-    return this.emitterModel.find().skip(offset).limit(limit).exec();
-  }
-
-  public async findOne(emitterId: Types.ObjectId | string): Promise<Emitter> {
-    const engineer = await this.emitterModel
-      .findById({ _id: emitterId })
+  public async findById(emitterId: Types.ObjectId | string): Promise<Emitter> {
+    const emitter = await this.emitterModel
+      .findOne({ _id: emitterId })
       .populate('activator', 'name surname activationLogin')
       .exec();
 
-    if (!engineer) {
+    if (!emitter) {
       throw new NotFoundException(
         `Emitter with id: ${emitterId} wasn't found!`
       );
     }
 
-    return engineer;
+    return emitter;
+  }
+
+  public async findOneWhere(where: Record<string, unknown>): Promise<Emitter> {
+    return this.emitterModel.findOne(where).exec();
+  }
+
+  public async findWhere(
+    where: Record<string, unknown>,
+    paginationQuery: PaginationQueryDto
+  ): Promise<Emitter[]> {
+    const { limit, offset } = paginationQuery;
+    return this.emitterModel.find(where).skip(offset).limit(limit).exec();
   }
 
   public async create(createEmitterDto: CreateEmitterDto): Promise<Emitter> {
-    const session = await this.emitterModel.startSession();
-    session.startTransaction();
-
     try {
-      let newEmitterModel = new this.emitterModel(createEmitterDto);
-      newEmitterModel = await newEmitterModel.save({ session });
+      const newEmitterModel = new this.emitterModel(createEmitterDto);
 
       await this.addEmitterForEngineer(
         newEmitterModel._id,
         createEmitterDto.activator as Types.ObjectId
       );
 
-      await session.commitTransaction();
-
-      return newEmitterModel;
+      return await newEmitterModel.save();
     } catch (error) {
-      await session.abortTransaction();
       throw new BadRequestException(error.message);
-    } finally {
-      session.endSession();
     }
   }
 
   public async update(
-    emitterId: string,
+    emitterId: Types.ObjectId | string,
     updateEmitterDto: UpdateEmitterDto
   ): Promise<Emitter> {
     try {
-      const emitter = await this.findOne(emitterId);
+      const emitter = await this.findById(emitterId);
       const previousEngineerId = (emitter.activator as AttendantEngineer)._id.toHexString();
 
       if (
@@ -90,8 +86,8 @@ export class EmittersService {
     }
   }
 
-  public async remove(emitterId: string): Promise<any> {
-    const emitter = await this.findOne(emitterId);
+  public async remove(emitterId: Types.ObjectId | string): Promise<any> {
+    const emitter = await this.findById(emitterId);
     const engineerId = (emitter.activator as AttendantEngineer)._id.toHexString();
     await this.removeEmitterForEngineer(emitter._id, engineerId);
     return emitter.delete();
