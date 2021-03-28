@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { IS_PUBLIC_KEY } from '../../../common/decorators/routes-privacy.decorator';
 
 @Injectable()
-export class HttpJwtAuthGuard extends AuthGuard('httpJwtStrategy') {
+export class HttpJwtAuthGuard extends AuthGuard('emitterHttpJwtStrategy') {
   constructor(private reflector: Reflector) {
     super();
   }

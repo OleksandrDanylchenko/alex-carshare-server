@@ -6,7 +6,7 @@ import { IS_PUBLIC_KEY } from '../../../common/decorators/routes-privacy.decorat
 import { Handshake, Socket } from 'socket.io';
 
 @Injectable()
-export class SocketJwtAuthGuard extends AuthGuard('socketJwtStrategy') {
+export class SocketJwtAuthGuard extends AuthGuard('emitterSocketJwtStrategy') {
   constructor(private reflector: Reflector) {
     super();
   }

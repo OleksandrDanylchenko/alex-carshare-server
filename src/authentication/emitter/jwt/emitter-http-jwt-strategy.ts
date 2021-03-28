@@ -15,7 +15,7 @@ export interface IEmitterJwtPayload {
 @Injectable()
 export class EmitterHttpJwtStrategy extends PassportStrategy(
   Strategy,
-  'httpJwtStrategy'
+  'emitterHttpJwtStrategy'
 ) {
   constructor(
     private authConfigService: AuthConfigService,
