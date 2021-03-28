@@ -47,7 +47,7 @@ export class EngineersController {
   }
 
   @Delete('/:id')
-  public async deleteCustomer(@Param('id') customerId: string): Promise<any> {
-    return this.engineersService.remove(customerId);
+  public async deleteCustomer(@Param('id') engineerId: string): Promise<any> {
+    return this.engineersService.remove(engineerId);
   }
 }

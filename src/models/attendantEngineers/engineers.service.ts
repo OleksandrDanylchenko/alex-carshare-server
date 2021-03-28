@@ -64,7 +64,7 @@ export class EngineersService {
   }
 
   public async update(
-    engineerId: string,
+    engineerId: Types.ObjectId | string,
     updateEngineerDto: UpdateEngineerDto
   ): Promise<AttendantEngineer> {
     try {
@@ -72,19 +72,19 @@ export class EngineersService {
         updateEngineerDto
       );
 
-      const existingEngineer = await this.engineerModel.findByIdAndUpdate(
+      const engineer = await this.engineerModel.findByIdAndUpdate(
         { _id: engineerId },
         hashedEngineer,
         { new: true }
       );
 
-      if (!existingEngineer) {
+      if (!engineer) {
         throw new NotFoundException(
           `Engineer with id: ${engineerId} wasn't found!`
         );
       }
 
-      return existingEngineer;
+      return engineer;
     } catch (error) {
       throw new BadRequestException(error.message);
     }
@@ -101,7 +101,7 @@ export class EngineersService {
     return { ...engineerDto, activationPassword: hashedPassword };
   }
 
-  async remove(engineerId: string): Promise<any> {
+  async remove(engineerId: Types.ObjectId | string): Promise<any> {
     const engineer = await this.findById(engineerId);
     return engineer.delete();
   }
