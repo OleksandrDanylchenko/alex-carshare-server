@@ -1,8 +1,8 @@
 import { Types } from 'mongoose';
-import { AttendantEngineer } from '../../attendantEngineers/schemas/engineer.schema';
+import { IEngineer } from '../../attendantEngineers/interfaces/engineer.interface';
 
 export interface IEmitter {
   readonly emitterId: string;
-  readonly activator: Types.ObjectId | AttendantEngineer;
+  readonly activator: Types.ObjectId | IEngineer;
   readonly batteryLevel?: number;
 }

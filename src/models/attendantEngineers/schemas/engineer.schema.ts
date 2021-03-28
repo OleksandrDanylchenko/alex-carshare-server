@@ -1,8 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import * as mongoose from 'mongoose';
 import { Document, Types } from 'mongoose';
-import { Emitter } from '../../emitters/schemas/emitter.schema';
 import { IEngineer } from '../interfaces/engineer.interface';
+import { IEmitter } from '../../emitters/interfaces/emitter.interface';
 
 @Schema({ collection: 'attendant_engineers' })
 export class AttendantEngineer extends Document implements IEngineer {
@@ -22,7 +22,7 @@ export class AttendantEngineer extends Document implements IEngineer {
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Emitter' }],
     default: []
   })
-  activatedEmitters: Types.ObjectId[] | Emitter[];
+  activatedEmitters: (Types.ObjectId | IEmitter)[];
 }
 
 export const AttendantEngineerSchema = SchemaFactory.createForClass(

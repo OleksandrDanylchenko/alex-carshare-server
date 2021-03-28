@@ -51,7 +51,7 @@ export class EmittersService {
 
       await this.addEmitterForEngineer(
         newEmitterModel._id,
-        createEmitterDto.activator
+        createEmitterDto.activator as Types.ObjectId
       );
 
       await session.commitTransaction();
@@ -80,7 +80,7 @@ export class EmittersService {
         await this.substituteEmitterEngineers(
           emitter._id,
           previousEngineerId,
-          updateEmitterDto.activator
+          updateEmitterDto.activator as Types.ObjectId
         );
       }
 

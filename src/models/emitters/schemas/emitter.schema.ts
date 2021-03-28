@@ -1,8 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import * as mongoose from 'mongoose';
 import { Document, Types } from 'mongoose';
-import { AttendantEngineer } from '../../attendantEngineers/schemas/engineer.schema';
 import { IEmitter } from '../interfaces/emitter.interface';
+import { IEngineer } from '../../attendantEngineers/interfaces/engineer.interface';
 
 @Schema({ collection: 'emitters', timestamps: { createdAt: 'activatedAt' } })
 export class Emitter extends Document implements IEmitter {
@@ -13,7 +13,7 @@ export class Emitter extends Document implements IEmitter {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'AttendantEngineer'
   })
-  readonly activator: Types.ObjectId | AttendantEngineer;
+  readonly activator: Types.ObjectId | IEngineer;
 
   @Prop({ required: false })
   readonly batteryLevel: number | null;

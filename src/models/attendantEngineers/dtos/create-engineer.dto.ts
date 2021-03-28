@@ -1,7 +1,7 @@
 import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { IEngineer } from '../interfaces/engineer.interface';
 import { Types } from 'mongoose';
-import { Emitter } from '../../emitters/schemas/emitter.schema';
+import { IEmitter } from '../../emitters/interfaces/emitter.interface';
 
 export class CreateEngineerDto implements IEngineer {
   @IsString()
@@ -23,5 +23,5 @@ export class CreateEngineerDto implements IEngineer {
   @IsArray()
   @IsString({ each: true })
   @IsOptional()
-  readonly activatedEmitters: (Types.ObjectId | Emitter)[];
+  readonly activatedEmitters: (Types.ObjectId | IEmitter)[];
 }
