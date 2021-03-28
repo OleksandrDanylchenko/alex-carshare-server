@@ -27,7 +27,11 @@ export class EmittersGateway
 
   handleConnection(client: Client, ...args: any[]): any {
     return this.emittersService
-      .create({ emitterId: client.id, activator: args[0] })
+      .create({
+        emitterId: client.id,
+        activator: args[0],
+        activatedCar: args[1]
+      })
       .catch((error) => {
         return error;
       });
