@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CarsService } from './cars.service';
 import { CarsController } from './cars.controller';
@@ -23,7 +23,7 @@ import { EmittersModule } from '../emitters/emitters.module';
         }
       }
     ]),
-    EmittersModule
+    forwardRef(() => EmittersModule)
   ],
   controllers: [CarsController],
   providers: [CarsService],
