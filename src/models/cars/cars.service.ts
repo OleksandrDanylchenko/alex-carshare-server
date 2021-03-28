@@ -75,9 +75,13 @@ export class CarsService {
   }
 
   public async remove(carId: Types.ObjectId | string): Promise<any> {
-    const car = await this.findById(carId);
-    await this.removeCarEmitter((car.emitter as Emitter)?._id?.toHexString());
-    return car.delete();
+    try {
+      const car = await this.findById(carId);
+      await this.removeCarEmitter((car.emitter as Emitter)?._id?.toHexString());
+      return car.delete();
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
   private async removeCarEmitter(

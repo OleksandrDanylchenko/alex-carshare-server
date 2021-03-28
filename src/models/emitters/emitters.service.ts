@@ -87,10 +87,14 @@ export class EmittersService {
   }
 
   public async remove(emitterId: Types.ObjectId | string): Promise<any> {
-    const emitter = await this.findById(emitterId);
-    const engineerId = (emitter.activator as AttendantEngineer)._id.toHexString();
-    await this.removeEmitterForEngineer(emitter._id, engineerId);
-    return emitter.delete();
+    try {
+      const emitter = await this.findById(emitterId);
+      const engineerId = (emitter.activator as AttendantEngineer)._id.toHexString();
+      await this.removeEmitterForEngineer(emitter._id, engineerId);
+      return emitter.delete();
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
   private async addEmitterForEngineer(

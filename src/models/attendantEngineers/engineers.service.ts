@@ -102,7 +102,11 @@ export class EngineersService {
   }
 
   public async remove(engineerId: Types.ObjectId | string): Promise<any> {
-    const engineer = await this.findById(engineerId);
-    return engineer.delete();
+    try {
+      const engineer = await this.findById(engineerId);
+      return engineer.delete();
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 }
