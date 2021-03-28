@@ -21,7 +21,7 @@ export class EmittersService {
     private readonly carsService: CarsService
   ) {}
 
-  public async findById(emitterId: Types.ObjectId): Promise<Emitter> {
+  public async findById(emitterId: Types.ObjectId | string): Promise<Emitter> {
     const emitter = await this.emitterModel
       .findOne({ _id: emitterId })
       .populate('activator', 'name surname activationLogin')
@@ -69,7 +69,7 @@ export class EmittersService {
   }
 
   public async update(
-    emitterId: Types.ObjectId,
+    emitterId: Types.ObjectId | string,
     updateEmitterDto: UpdateEmitterDto
   ): Promise<Emitter> {
     try {
@@ -93,7 +93,7 @@ export class EmittersService {
     }
   }
 
-  public async remove(emitterId: Types.ObjectId): Promise<any> {
+  public async remove(emitterId: Types.ObjectId | string): Promise<any> {
     try {
       const emitter = await this.findById(emitterId);
       const engineerId = (emitter.activator as AttendantEngineer)._id.toHexString();

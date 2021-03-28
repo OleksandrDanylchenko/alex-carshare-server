@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { PaginationQueryDto } from '../common/dtos/pagination-query-dto';
@@ -15,7 +19,7 @@ export class CarsService {
     private readonly emittersService: EmittersService
   ) {}
 
-  public async findById(carId: Types.ObjectId): Promise<Car> {
+  public async findById(carId: Types.ObjectId | string): Promise<Car> {
     const car = await this.carModel
       .findOne({ _id: carId })
       .populate('emitter')
@@ -50,7 +54,7 @@ export class CarsService {
   }
 
   public async update(
-    carId: Types.ObjectId,
+    carId: Types.ObjectId | string,
     updateCarDto: UpdateCarDto
   ): Promise<Car> {
     try {
@@ -79,7 +83,7 @@ export class CarsService {
     car.update();
   }
 
-  public async remove(carId: Types.ObjectId): Promise<any> {
+  public async remove(carId: Types.ObjectId | string): Promise<any> {
     try {
       const car = await this.findById(carId);
       await this.removeCarEmitter((car.emitter as Emitter)?._id?.toHexString());

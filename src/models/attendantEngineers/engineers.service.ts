@@ -19,7 +19,7 @@ export class EngineersService {
   ) {}
 
   public async findById(
-    engineerId: Types.ObjectId
+    engineerId: Types.ObjectId | string
   ): Promise<AttendantEngineer> {
     const engineer = await this.engineerModel
       .findOne({ _id: engineerId })
@@ -64,7 +64,7 @@ export class EngineersService {
   }
 
   public async update(
-    engineerId: Types.ObjectId,
+    engineerId: Types.ObjectId | string,
     updateEngineerDto: UpdateEngineerDto
   ): Promise<AttendantEngineer> {
     try {
@@ -123,7 +123,7 @@ export class EngineersService {
     return { ...engineerDto, activationPassword: hashedPassword };
   }
 
-  public async remove(engineerId: Types.ObjectId): Promise<any> {
+  public async remove(engineerId: Types.ObjectId | string): Promise<any> {
     try {
       const engineer = await this.findById(engineerId);
       return engineer.delete();

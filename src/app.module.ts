@@ -8,6 +8,7 @@ import { EngineersModule } from './models/attendantEngineers/engineers.module';
 import { EmittersModule } from './models/emitters/emitters.module';
 import { EmitterAuthModule } from './authentication/emitter/emitter-auth.module';
 import { CarsModule } from './models/cars/cars.module';
+import { TripsModule } from './models/trips/trips.module';
 
 @Module({
   imports: [
@@ -17,7 +18,8 @@ import { CarsModule } from './models/cars/cars.module';
     EngineersModule,
     EmittersModule,
     EmitterAuthModule,
-    CarsModule
+    CarsModule,
+    TripsModule
   ],
   controllers: [],
   providers: [
