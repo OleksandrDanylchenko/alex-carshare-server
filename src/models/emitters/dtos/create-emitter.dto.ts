@@ -8,6 +8,7 @@ import {
 import { IEmitter } from '../interfaces/emitter.interface';
 import { Types } from 'mongoose';
 import { IEngineer } from '../../attendantEngineers/interfaces/engineer.interface';
+import { ICar } from '../../cars/interfaces/car.interface';
 
 export class CreateEmitterDto implements IEmitter {
   @IsString()
@@ -17,6 +18,10 @@ export class CreateEmitterDto implements IEmitter {
   @IsString()
   @IsNotEmpty()
   readonly activator: Types.ObjectId | IEngineer;
+
+  @IsString()
+  @IsNotEmpty()
+  readonly activatedCar: Types.ObjectId | ICar;
 
   @IsNumber()
   @IsPositive()

@@ -90,6 +90,28 @@ export class EngineersService {
     }
   }
 
+  public async addEmitterForEngineer(
+    emitterId: Types.ObjectId,
+    engineerId: Types.ObjectId
+  ): Promise<void> {
+    const engineer = await this.findById(engineerId);
+    (engineer.activatedEmitters as Types.ObjectId[]).push(emitterId);
+    await engineer.update();
+  }
+
+  public async removeEmitterForEngineer(
+    emitterId: Types.ObjectId,
+    engineerId: Types.ObjectId
+  ): Promise<void> {
+    const engineer = await this.findById(engineerId);
+
+    const activatedEmitters = engineer.activatedEmitters as Types.ObjectId[];
+    activatedEmitters.splice(activatedEmitters.indexOf(emitterId), 1);
+
+    engineer.activatedEmitters = activatedEmitters;
+    await engineer.update();
+  }
+
   public async hashActivationPassword(
     engineerDto: Partial<IEngineer>
   ): Promise<Partial<IEngineer>> {

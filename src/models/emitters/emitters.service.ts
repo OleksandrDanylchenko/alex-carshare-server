@@ -50,7 +50,7 @@ export class EmittersService {
     try {
       const newEmitterModel = new this.emitterModel(createEmitterDto);
 
-      await this.addEmitterForEngineer(
+      await this.engineersService.addEmitterForEngineer(
         newEmitterModel._id,
         createEmitterDto.activator as Types.ObjectId
       );
@@ -90,20 +90,14 @@ export class EmittersService {
     try {
       const emitter = await this.findById(emitterId);
       const engineerId = (emitter.activator as AttendantEngineer)._id.toHexString();
-      await this.removeEmitterForEngineer(emitter._id, engineerId);
+      await this.engineersService.removeEmitterForEngineer(
+        emitter._id,
+        engineerId
+      );
       return emitter.delete();
     } catch (error) {
       throw new BadRequestException(error.message);
     }
-  }
-
-  private async addEmitterForEngineer(
-    emitterId: Types.ObjectId,
-    engineerId: Types.ObjectId
-  ): Promise<void> {
-    const engineer = await this.engineersService.findById(engineerId);
-    (engineer.activatedEmitters as Types.ObjectId[]).push(emitterId);
-    await this.engineersService.update(engineer._id, engineer);
   }
 
   private async substituteEmitterEngineers(
@@ -111,20 +105,10 @@ export class EmittersService {
     previousEngineerId: Types.ObjectId,
     newEngineerId: Types.ObjectId
   ): Promise<void> {
-    await this.removeEmitterForEngineer(emitterId, previousEngineerId);
-    await this.addEmitterForEngineer(emitterId, newEngineerId);
-  }
-
-  private async removeEmitterForEngineer(
-    emitterId: Types.ObjectId,
-    engineerId: Types.ObjectId
-  ): Promise<void> {
-    const engineer = await this.engineersService.findById(engineerId);
-
-    const activatedEmitters = engineer.activatedEmitters as Types.ObjectId[];
-    activatedEmitters.splice(activatedEmitters.indexOf(emitterId), 1);
-
-    engineer.activatedEmitters = activatedEmitters;
-    await this.engineersService.update(engineer._id, engineer);
+    await this.engineersService.removeEmitterForEngineer(
+      emitterId,
+      previousEngineerId
+    );
+    await this.engineersService.addEmitterForEngineer(emitterId, newEngineerId);
   }
 }
