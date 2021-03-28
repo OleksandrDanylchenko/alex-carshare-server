@@ -1,8 +1,8 @@
 {
   "name": "alex-carshare-server",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "Server monolith application for administration of AlexCarshare service",
+  "author": "Oleksandr Danylchenko",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
