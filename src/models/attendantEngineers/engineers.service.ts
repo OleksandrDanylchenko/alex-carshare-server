@@ -101,7 +101,7 @@ export class EngineersService {
     return { ...engineerDto, activationPassword: hashedPassword };
   }
 
-  async remove(engineerId: Types.ObjectId | string): Promise<any> {
+  public async remove(engineerId: Types.ObjectId | string): Promise<any> {
     const engineer = await this.findById(engineerId);
     return engineer.delete();
   }

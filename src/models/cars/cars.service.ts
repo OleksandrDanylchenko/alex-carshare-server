@@ -9,6 +9,7 @@ import { PaginationQueryDto } from '../common/dtos/pagination-query-dto';
 import { Car } from './schemas/car.schema';
 import { EmittersService } from '../emitters/emitters.service';
 import { CreateCarDto, UpdateCarDto } from './dtos';
+import { Emitter } from '../emitters/schemas/emitter.schema';
 
 @Injectable()
 export class CarsService {
@@ -73,8 +74,17 @@ export class CarsService {
     }
   }
 
-  async remove(carId: Types.ObjectId | string): Promise<any> {
+  public async remove(carId: Types.ObjectId | string): Promise<any> {
     const car = await this.findById(carId);
+    await this.removeCarEmitter((car.emitter as Emitter)?._id?.toHexString());
     return car.delete();
+  }
+
+  private async removeCarEmitter(
+    carEmitterId?: Types.ObjectId | string
+  ): Promise<void> {
+    if (carEmitterId) {
+      await this.emittersService.remove(carEmitterId);
+    }
   }
 }
