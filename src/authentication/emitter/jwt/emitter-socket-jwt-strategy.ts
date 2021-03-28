@@ -30,7 +30,6 @@ export class EmitterSocketJwtStrategy extends PassportStrategy(
 
   async validate(payload: IEmitterJwtPayload): Promise<AttendantEngineer> {
     const engineer = await this.engineersService.findById(payload.id);
-    debugger;
     if (!engineer) {
       throw new UnauthorizedException(
         `Engineer with provided ${payload.id} wasn't found`

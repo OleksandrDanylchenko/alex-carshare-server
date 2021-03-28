@@ -16,7 +16,6 @@ export class EmitterAuthStrategy extends PassportStrategy(LocalStrategy) {
     login: string,
     password: string
   ): Promise<AttendantEngineer> {
-    debugger;
     const engineer = await this.authService.validateExistingEngineer(
       login,
       password
