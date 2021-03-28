@@ -10,16 +10,18 @@ import { CreateEmitterDto, UpdateEmitterDto } from './dtos';
 import { Emitter } from './schemas/emitter.schema';
 import { EngineersService } from '../attendantEngineers/engineers.service';
 import { AttendantEngineer } from '../attendantEngineers/schemas/engineer.schema';
+import { CarsService } from '../cars/cars.service';
 
 @Injectable()
 export class EmittersService {
   constructor(
     @InjectModel(Emitter.name)
     private readonly emitterModel: Model<Emitter>,
-    private readonly engineersService: EngineersService
+    private readonly engineersService: EngineersService,
+    private readonly carsService: CarsService
   ) {}
 
-  public async findById(emitterId: Types.ObjectId | string): Promise<Emitter> {
+  public async findById(emitterId: Types.ObjectId): Promise<Emitter> {
     const emitter = await this.emitterModel
       .findOne({ _id: emitterId })
       .populate('activator', 'name surname activationLogin')
@@ -55,6 +57,11 @@ export class EmittersService {
         createEmitterDto.activator as Types.ObjectId
       );
 
+      await this.carsService.addCarEmitter(
+        createEmitterDto.activatedCar as Types.ObjectId,
+        newEmitterModel._id
+      );
+
       return await newEmitterModel.save();
     } catch (error) {
       throw new BadRequestException(error.message);
@@ -62,7 +69,7 @@ export class EmittersService {
   }
 
   public async update(
-    emitterId: Types.ObjectId | string,
+    emitterId: Types.ObjectId,
     updateEmitterDto: UpdateEmitterDto
   ): Promise<Emitter> {
     try {
@@ -86,7 +93,7 @@ export class EmittersService {
     }
   }
 
-  public async remove(emitterId: Types.ObjectId | string): Promise<any> {
+  public async remove(emitterId: Types.ObjectId): Promise<any> {
     try {
       const emitter = await this.findById(emitterId);
       const engineerId = (emitter.activator as AttendantEngineer)._id.toHexString();

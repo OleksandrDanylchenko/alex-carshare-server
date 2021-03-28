@@ -3,6 +3,7 @@ import * as mongoose from 'mongoose';
 import { Document, Types } from 'mongoose';
 import { IEmitter } from '../interfaces/emitter.interface';
 import { IEngineer } from '../../attendantEngineers/interfaces/engineer.interface';
+import { ICar } from '../../cars/interfaces/car.interface';
 
 @Schema({
   collection: 'emitters',
@@ -17,6 +18,12 @@ export class Emitter extends Document implements IEmitter {
     ref: 'AttendantEngineer'
   })
   readonly activator: Types.ObjectId | IEngineer;
+
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Car'
+  })
+  readonly activatedCar: Types.ObjectId | ICar;
 
   @Prop({ required: false })
   readonly batteryLevel: number | null;

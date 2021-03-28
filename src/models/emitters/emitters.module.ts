@@ -6,6 +6,7 @@ import { Emitter, EmitterSchema } from './schemas/emitter.schema';
 import { EngineersModule } from '../attendantEngineers/engineers.module';
 import { Schema } from 'mongoose';
 import { EmittersGateway } from './gateway/emitters.gateway';
+import { CarsModule } from '../cars/cars.module';
 
 @Module({
   imports: [
@@ -24,7 +25,8 @@ import { EmittersGateway } from './gateway/emitters.gateway';
         }
       }
     ]),
-    EngineersModule
+    EngineersModule,
+    CarsModule
   ],
   controllers: [EmittersController],
   providers: [EmittersService, EmittersGateway],

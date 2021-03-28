@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException
-} from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { PaginationQueryDto } from '../common/dtos/pagination-query-dto';
@@ -19,7 +15,7 @@ export class CarsService {
     private readonly emittersService: EmittersService
   ) {}
 
-  public async findById(carId: Types.ObjectId | string): Promise<Car> {
+  public async findById(carId: Types.ObjectId): Promise<Car> {
     const car = await this.carModel
       .findOne({ _id: carId })
       .populate('emitter')
@@ -54,7 +50,7 @@ export class CarsService {
   }
 
   public async update(
-    carId: Types.ObjectId | string,
+    carId: Types.ObjectId,
     updateCarDto: UpdateCarDto
   ): Promise<Car> {
     try {
@@ -74,7 +70,16 @@ export class CarsService {
     }
   }
 
-  public async remove(carId: Types.ObjectId | string): Promise<any> {
+  public async addCarEmitter(
+    carId: Types.ObjectId,
+    emitterId: Types.ObjectId
+  ): Promise<void> {
+    const car = await this.findById(carId);
+    car.emitter = emitterId;
+    car.update();
+  }
+
+  public async remove(carId: Types.ObjectId): Promise<any> {
     try {
       const car = await this.findById(carId);
       await this.removeCarEmitter((car.emitter as Emitter)?._id?.toHexString());
@@ -84,15 +89,13 @@ export class CarsService {
     }
   }
 
-  private async removeCarEmitter(
-    carEmitterId?: Types.ObjectId | string
-  ): Promise<void> {
+  private async removeCarEmitter(carEmitterId?: Types.ObjectId): Promise<void> {
     if (carEmitterId) {
       await this.emittersService.remove(carEmitterId);
     }
   }
 
-  public async removeCarTrip(carId?: Types.ObjectId | string): Promise<void> {
+  public async removeCarTrip(carId?: Types.ObjectId): Promise<void> {
     if (carId) {
       const car = await this.findById(carId);
       car.currentTrip = undefined;

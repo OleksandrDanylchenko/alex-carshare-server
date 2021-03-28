@@ -20,7 +20,7 @@ export class TripsService {
     private readonly carsService: CarsService
   ) {}
 
-  public async findById(tripId: Types.ObjectId | string): Promise<Trip> {
+  public async findById(tripId: Types.ObjectId): Promise<Trip> {
     const trip = await this.tripModel
       .findOne({ _id: tripId })
       .populate('car')
@@ -55,7 +55,7 @@ export class TripsService {
   }
 
   public async update(
-    carId: Types.ObjectId | string,
+    carId: Types.ObjectId,
     updateTripDto: UpdateTripsDto
   ): Promise<Trip> {
     try {
@@ -75,7 +75,7 @@ export class TripsService {
     }
   }
 
-  public async remove(carId: Types.ObjectId | string): Promise<any> {
+  public async remove(carId: Types.ObjectId): Promise<any> {
     try {
       const trip = await this.findById(carId);
       await this.removeCarTrip((trip.trippingCar as Car)?._id?.toHexString());
@@ -85,9 +85,7 @@ export class TripsService {
     }
   }
 
-  private async removeCarTrip(
-    trippingCarId?: Types.ObjectId | string
-  ): Promise<void> {
+  private async removeCarTrip(trippingCarId?: Types.ObjectId): Promise<void> {
     if (trippingCarId) {
       await this.carsService.removeCarTrip(trippingCarId);
     }
