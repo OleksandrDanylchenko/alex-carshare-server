@@ -91,4 +91,12 @@ export class CarsService {
       await this.emittersService.remove(carEmitterId);
     }
   }
+
+  public async removeCarTrip(carId?: Types.ObjectId | string): Promise<void> {
+    if (carId) {
+      const car = await this.findById(carId);
+      car.currentTrip = undefined;
+      car.update();
+    }
+  }
 }

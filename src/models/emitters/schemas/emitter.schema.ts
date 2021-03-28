@@ -4,7 +4,10 @@ import { Document, Types } from 'mongoose';
 import { IEmitter } from '../interfaces/emitter.interface';
 import { IEngineer } from '../../attendantEngineers/interfaces/engineer.interface';
 
-@Schema({ collection: 'emitters', timestamps: { createdAt: 'activatedAt' } })
+@Schema({
+  collection: 'emitters',
+  timestamps: { createdAt: true, updatedAt: true }
+})
 export class Emitter extends Document implements IEmitter {
   @Prop({ required: true, unique: true })
   readonly emitterId: string;

@@ -4,8 +4,12 @@ import { Document, Types } from 'mongoose';
 import { ICar } from '../interfaces/car.interface';
 import { IAttribute } from '../../common/interfaces/attribute-patter.interface';
 import { IEmitter } from '../../emitters/interfaces/emitter.interface';
+import { ITrip } from '../../trips/interfaces/trip.interface';
 
-@Schema({ collection: 'cars', timestamps: { createdAt: true } })
+@Schema({
+  collection: 'cars',
+  timestamps: { createdAt: true, updatedAt: true }
+})
 export class Car extends Document implements ICar {
   @Prop({ required: true, unique: true })
   readonly vin: string;
@@ -27,10 +31,14 @@ export class Car extends Document implements ICar {
     ref: 'Emitter',
     required: false
   })
-  readonly emitter?: Types.ObjectId | IEmitter;
+  emitter?: Types.ObjectId | IEmitter;
 
-  @Prop({ required: false })
-  readonly currentTrip?: Types.ObjectId;
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Trip',
+    required: false
+  })
+  currentTrip?: Types.ObjectId | ITrip;
 
   @Prop({ required: true, default: [], index: true })
   readonly characteristics: IAttribute[];

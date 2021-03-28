@@ -4,7 +4,10 @@ import { Document, Types } from 'mongoose';
 import { IEngineer } from '../interfaces/engineer.interface';
 import { IEmitter } from '../../emitters/interfaces/emitter.interface';
 
-@Schema({ collection: 'attendant_engineers' })
+@Schema({
+  collection: 'attendant_engineers',
+  timestamps: { createdAt: true, updatedAt: true }
+})
 export class AttendantEngineer extends Document implements IEngineer {
   @Prop({ required: true })
   name: string;

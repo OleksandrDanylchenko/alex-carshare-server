@@ -23,11 +23,11 @@ export class EmitterAuthStrategy extends PassportStrategy(LocalStrategy) {
     if (!engineer) {
       if (req.path.includes('/sign-in')) {
         throw new UnauthorizedException(
-          'Car with provided VIN number or password cannot be found'
+          'Trip with provided VIN number or password cannot be found'
         );
       } else {
         throw new UnauthorizedException(
-          'Car with provided password cannot be found'
+          'Trip with provided password cannot be found'
         );
       }
     }
