@@ -24,7 +24,7 @@ export class Car extends Document implements ICar {
   readonly manufactureYear: number;
 
   @Prop({ required: false })
-  readonly photoUrl?: string;
+  readonly photoUrl: string | null;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,

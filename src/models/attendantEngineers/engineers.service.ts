@@ -6,7 +6,7 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { AttendantEngineer } from './schemas/engineer.schema';
 import { Model, Types } from 'mongoose';
-import { PaginationQueryDto } from '../common/dtos/pagination-query-dto';
+import { PaginationQuery } from '../common/dtos/pagination-query';
 import { CreateEngineerDto, UpdateEngineerDto } from './dtos';
 import { createHash } from '../../common/utils/hashing.helper';
 import { IEngineer } from './interfaces/engineer.interface';
@@ -43,7 +43,7 @@ export class EngineersService {
 
   public async findWhere(
     where: Record<string, unknown>,
-    paginationQuery: PaginationQueryDto
+    paginationQuery: PaginationQuery
   ): Promise<AttendantEngineer[]> {
     const { limit, offset } = paginationQuery;
     return this.engineerModel.find(where).skip(offset).limit(limit).exec();

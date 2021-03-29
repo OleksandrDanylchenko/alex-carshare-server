@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { PaginationQueryDto } from '../common/dtos/pagination-query-dto';
+import { PaginationQuery } from '../common/dtos/pagination-query';
 import { Car } from './schemas/car.schema';
 import { EmittersService } from '../emitters/emitters.service';
 import { CreateCarDto, UpdateCarDto } from './dtos';
@@ -41,7 +41,7 @@ export class CarsService {
 
   public async findWhere(
     where: Record<string, unknown>,
-    paginationQuery: PaginationQueryDto
+    paginationQuery: PaginationQuery
   ): Promise<Car[]> {
     const { limit, offset } = paginationQuery;
     return this.carModel.find(where).skip(offset).limit(limit).exec();
@@ -98,7 +98,7 @@ export class CarsService {
 
   private async removeCarEmitter(carEmitterId?: Types.ObjectId): Promise<void> {
     if (carEmitterId) {
-      await this.emittersService.remove(carEmitterId);
+      await this.emittersService.removeById(carEmitterId);
     }
   }
 

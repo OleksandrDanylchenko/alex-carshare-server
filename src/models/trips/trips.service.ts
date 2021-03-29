@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { PaginationQueryDto } from '../common/dtos/pagination-query-dto';
+import { PaginationQuery } from '../common/dtos/pagination-query';
 import { Trip } from './schemas/trip.schema';
 import { CreateTripsDto } from './dtos';
 import { UpdateTripsDto } from './dtos/update-trips.dto';
@@ -39,7 +39,7 @@ export class TripsService {
 
   public async findWhere(
     where: Record<string, unknown>,
-    paginationQuery: PaginationQueryDto
+    paginationQuery: PaginationQuery
   ): Promise<Trip[]> {
     const { limit, offset } = paginationQuery;
     return this.tripModel.find(where).skip(offset).limit(limit).exec();

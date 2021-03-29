@@ -15,7 +15,6 @@ import { EmittersModule } from '../emitters/emitters.module';
           const schema = CarSchema;
           // eslint-disable-next-line @typescript-eslint/no-var-requires
           schema.plugin(require('mongoose-delete'), {
-            overrideMethods: true,
             deletedAt: true,
             indexFields: ['deleteAt']
           });

@@ -9,7 +9,7 @@ import {
   Query
 } from '@nestjs/common';
 import { EngineersService } from './engineers.service';
-import { PaginationQueryDto } from '../common/dtos/pagination-query-dto';
+import { PaginationQuery } from '../common/dtos/pagination-query';
 import { AttendantEngineer } from './schemas/engineer.schema';
 import { CreateEngineerDto, UpdateEngineerDto } from './dtos';
 
@@ -19,7 +19,7 @@ export class EngineersController {
 
   @Get()
   public async getAllEngineers(
-    @Query() paginationQuery: PaginationQueryDto
+    @Query() paginationQuery: PaginationQuery
   ): Promise<AttendantEngineer[]> {
     return this.engineersService.findWhere({}, paginationQuery);
   }

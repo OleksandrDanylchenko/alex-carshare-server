@@ -9,7 +9,7 @@ import {
   Query
 } from '@nestjs/common';
 import { TripsService } from './trips.service';
-import { PaginationQueryDto } from '../common/dtos/pagination-query-dto';
+import { PaginationQuery } from '../common/dtos/pagination-query';
 import { Trip } from './schemas/trip.schema';
 import { CreateTripsDto } from './dtos';
 import { UpdateTripsDto } from './dtos/update-trips.dto';
@@ -20,7 +20,7 @@ export class TripsController {
 
   @Get()
   public async getAllTrips(
-    @Query() paginationQuery: PaginationQueryDto
+    @Query() paginationQuery: PaginationQuery
   ): Promise<Trip[]> {
     return this.tripsService.findWhere({}, paginationQuery);
   }

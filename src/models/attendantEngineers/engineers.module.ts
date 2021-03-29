@@ -17,7 +17,6 @@ import { Schema } from 'mongoose';
           const schema = AttendantEngineerSchema;
           // eslint-disable-next-line @typescript-eslint/no-var-requires
           schema.plugin(require('mongoose-delete'), {
-            overrideMethods: true,
             deletedAt: true,
             indexFields: ['deleteAt']
           });

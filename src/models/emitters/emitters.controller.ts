@@ -9,7 +9,7 @@ import {
   Query
 } from '@nestjs/common';
 import { EmittersService } from './emitters.service';
-import { PaginationQueryDto } from '../common/dtos/pagination-query-dto';
+import { PaginationQuery } from '../common/dtos/pagination-query';
 import { CreateEmitterDto, UpdateEmitterDto } from './dtos';
 import { Emitter } from './schemas/emitter.schema';
 
@@ -19,14 +19,16 @@ export class EmittersController {
 
   @Get()
   public async getAllEmitters(
-    @Query() paginationQuery: PaginationQueryDto
+    @Query() paginationQuery: PaginationQuery
   ): Promise<Emitter[]> {
-    return this.emittersService.findWhere({}, paginationQuery);
+    return this.emittersService.findAll(paginationQuery);
   }
 
-  @Get('/:id')
-  public async getEmitter(@Param('id') emitterId: string): Promise<Emitter> {
-    return this.emittersService.findById(emitterId);
+  @Get('/:emitterId')
+  public async getEmitter(
+    @Param('emitterId') emitterId: string
+  ): Promise<Emitter> {
+    return this.emittersService.findByEmitterId(emitterId);
   }
 
   @Post()
@@ -36,16 +38,16 @@ export class EmittersController {
     return this.emittersService.create(createEngineerDto);
   }
 
-  @Put('/:id')
+  @Put('/:emitterId')
   public async updateEmitter(
-    @Param('id') emitterId: string,
+    @Param('emitterId') emitterId: string,
     @Body() updateEngineerDto: UpdateEmitterDto
   ): Promise<Emitter> {
     return this.emittersService.update(emitterId, updateEngineerDto);
   }
 
-  @Delete('/:id')
+  @Delete('/:emitterId')
   public async deleteEmitter(@Param('id') emitterId: string): Promise<any> {
-    return this.emittersService.remove(emitterId);
+    return this.emittersService.removeByEmitterId(emitterId);
   }
 }

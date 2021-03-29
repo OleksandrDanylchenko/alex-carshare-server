@@ -9,7 +9,7 @@ import {
   Query
 } from '@nestjs/common';
 import { CarsService } from './cars.service';
-import { PaginationQueryDto } from '../common/dtos/pagination-query-dto';
+import { PaginationQuery } from '../common/dtos/pagination-query';
 import { CreateCarDto, UpdateCarDto } from './dtos';
 import { Car } from './schemas/car.schema';
 
@@ -19,7 +19,7 @@ export class CarsController {
 
   @Get()
   public async getAllCars(
-    @Query() paginationQuery: PaginationQueryDto
+    @Query() paginationQuery: PaginationQuery
   ): Promise<Car[]> {
     return this.carsService.findWhere({}, paginationQuery);
   }

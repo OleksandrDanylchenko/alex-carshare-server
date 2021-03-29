@@ -38,7 +38,7 @@ export class EmittersGateway
   }
 
   handleDisconnect(client: Client): any {
-    this.emittersService.remove(client.id).catch((error) => {
+    this.emittersService.removeById(client.id).catch((error) => {
       return error;
     });
   }

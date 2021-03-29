@@ -27,9 +27,6 @@ export class Emitter extends Document implements IEmitter {
 
   @Prop({ required: false })
   readonly batteryLevel: number | null;
-
-  @Prop()
-  readonly activatedAt: Date;
 }
 
 export const EmitterSchema = SchemaFactory.createForClass(Emitter);

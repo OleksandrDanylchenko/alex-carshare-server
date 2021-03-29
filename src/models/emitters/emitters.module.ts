@@ -7,6 +7,7 @@ import { EngineersModule } from '../attendantEngineers/engineers.module';
 import { Schema } from 'mongoose';
 import { EmittersGateway } from './gateway/emitters.gateway';
 import { CarsModule } from '../cars/cars.module';
+import { EmittersRepository } from './emitters.repository';
 
 @Module({
   imports: [
@@ -17,7 +18,6 @@ import { CarsModule } from '../cars/cars.module';
           const schema = EmitterSchema;
           // eslint-disable-next-line @typescript-eslint/no-var-requires
           schema.plugin(require('mongoose-delete'), {
-            overrideMethods: true,
             deletedAt: true,
             indexFields: ['deleteAt']
           });
@@ -29,7 +29,7 @@ import { CarsModule } from '../cars/cars.module';
     forwardRef(() => CarsModule)
   ],
   controllers: [EmittersController],
-  providers: [EmittersService, EmittersGateway],
+  providers: [EmittersService, EmittersGateway, EmittersRepository],
   exports: [EmittersService]
 })
 export class EmittersModule {}
