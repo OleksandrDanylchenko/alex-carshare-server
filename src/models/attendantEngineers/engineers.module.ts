@@ -7,6 +7,7 @@ import {
 import { EngineersService } from './engineers.service';
 import { EngineersController } from './engineers.controller';
 import { Schema } from 'mongoose';
+import { EngineersRepository } from './engineers.repository';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { Schema } from 'mongoose';
           const schema = AttendantEngineerSchema;
           // eslint-disable-next-line @typescript-eslint/no-var-requires
           schema.plugin(require('mongoose-delete'), {
+            overrideMethods: true,
             deletedAt: true,
             indexFields: ['deleteAt']
           });
@@ -26,7 +28,7 @@ import { Schema } from 'mongoose';
     ])
   ],
   controllers: [EngineersController],
-  providers: [EngineersService],
+  providers: [EngineersService, EngineersRepository],
   exports: [EngineersService]
 })
 export class EngineersModule {}

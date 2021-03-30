@@ -11,9 +11,7 @@ export class EmitterAuthService {
     login: string,
     password: string
   ): Promise<AttendantEngineer> {
-    const engineer = await this.engineersService.findOneWhere({
-      activationLogin: login
-    });
+    const engineer = await this.engineersService.findByLogin(login);
     if (!engineer) {
       return null;
     }

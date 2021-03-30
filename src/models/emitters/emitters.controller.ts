@@ -47,7 +47,9 @@ export class EmittersController {
   }
 
   @Delete('/:emitterId')
-  public async deleteEmitter(@Param('id') emitterId: string): Promise<unknown> {
+  public async deleteEmitter(
+    @Param('emitterId') emitterId: string
+  ): Promise<unknown> {
     return this.emittersService.removeByEmitterId(emitterId);
   }
 }

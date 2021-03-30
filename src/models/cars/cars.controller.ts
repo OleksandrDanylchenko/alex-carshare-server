@@ -43,7 +43,7 @@ export class CarsController {
   }
 
   @Delete('/:vin')
-  public async deleteCar(@Param('vin') vin: string): Promise<Car> {
+  public async deleteCar(@Param('vin') vin: string): Promise<unknown> {
     return this.carsService.remove(vin);
   }
 }

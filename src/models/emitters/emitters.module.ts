@@ -18,6 +18,7 @@ import { EmittersRepository } from './emitters.repository';
           const schema = EmitterSchema;
           // eslint-disable-next-line @typescript-eslint/no-var-requires
           schema.plugin(require('mongoose-delete'), {
+            overrideMethods: true,
             deletedAt: true,
             indexFields: ['deleteAt']
           });

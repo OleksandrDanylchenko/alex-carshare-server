@@ -37,8 +37,7 @@ export class CarsService {
 
   public async create(createCarDto: CreateCarDto): Promise<Car> {
     try {
-      const newCarModel = await this.carsRepository.create(createCarDto as Car);
-      return newCarModel.save();
+      return await this.carsRepository.create(createCarDto as Car);
     } catch (error) {
       throw new BadRequestException(error.message);
     }
@@ -70,7 +69,7 @@ export class CarsService {
     car.update();
   }
 
-  public async remove(vin: string): Promise<any> {
+  public async remove(vin: string): Promise<unknown> {
     try {
       const car = await this.findByVin(vin);
       await this.removeCarEmitter((car.emitter as Emitter)?._id?.toHexString());

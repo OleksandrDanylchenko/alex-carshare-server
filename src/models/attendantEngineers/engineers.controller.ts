@@ -21,7 +21,7 @@ export class EngineersController {
   public async getAllEngineers(
     @Query() paginationQuery: PaginationQuery
   ): Promise<AttendantEngineer[]> {
-    return this.engineersService.findWhere({}, paginationQuery);
+    return this.engineersService.findAll(paginationQuery);
   }
 
   @Get('/:id')
@@ -47,7 +47,9 @@ export class EngineersController {
   }
 
   @Delete('/:id')
-  public async deleteCustomer(@Param('id') engineerId: string): Promise<any> {
+  public async deleteEngineer(
+    @Param('id') engineerId: string
+  ): Promise<unknown> {
     return this.engineersService.remove(engineerId);
   }
 }

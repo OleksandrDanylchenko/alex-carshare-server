@@ -3,28 +3,25 @@ import {
   Injectable,
   NotFoundException
 } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
 import { AttendantEngineer } from './schemas/engineer.schema';
-import { Model, Types } from 'mongoose';
+import { Types } from 'mongoose';
 import { PaginationQuery } from '../common/dtos/pagination-query';
 import { CreateEngineerDto, UpdateEngineerDto } from './dtos';
-import { createHash } from '../../common/utils/hashing.helper';
+import { compareHash, createHash } from '../../common/utils/hashing.helper';
 import { IEngineer } from './interfaces/engineer.interface';
+import { EngineersRepository } from './engineers.repository';
 
 @Injectable()
 export class EngineersService {
-  constructor(
-    @InjectModel(AttendantEngineer.name)
-    private readonly engineerModel: Model<AttendantEngineer>
-  ) {}
+  constructor(private readonly engineersRepository: EngineersRepository) {}
 
   public async findById(
     engineerId: Types.ObjectId | string
   ): Promise<AttendantEngineer> {
-    const engineer = await this.engineerModel
-      .findOne({ _id: engineerId })
-      .populate('activatedEmitters')
-      .exec();
+    const engineer = await this.engineersRepository.findOne(
+      { _id: engineerId },
+      [{ path: 'activatedEmitters' }]
+    );
 
     if (!engineer) {
       throw new NotFoundException(
@@ -35,18 +32,14 @@ export class EngineersService {
     return engineer;
   }
 
-  public async findOneWhere(
-    where: Record<string, unknown>
-  ): Promise<AttendantEngineer> {
-    return this.engineerModel.findOne(where).exec();
+  public async findByLogin(login: string): Promise<AttendantEngineer> {
+    return this.engineersRepository.findOne({ activationLogin: login });
   }
 
-  public async findWhere(
-    where: Record<string, unknown>,
+  public async findAll(
     paginationQuery: PaginationQuery
   ): Promise<AttendantEngineer[]> {
-    const { limit, offset } = paginationQuery;
-    return this.engineerModel.find(where).skip(offset).limit(limit).exec();
+    return this.engineersRepository.find({}, paginationQuery);
   }
 
   public async create(
@@ -56,8 +49,9 @@ export class EngineersService {
       const hashedEngineer = await this.hashActivationPassword(
         createEngineerDto
       );
-      const newEngineerModel = new this.engineerModel(hashedEngineer);
-      return newEngineerModel.save();
+      return await this.engineersRepository.create(
+        hashedEngineer as AttendantEngineer
+      );
     } catch (error) {
       throw new BadRequestException(error.message);
     }
@@ -68,13 +62,21 @@ export class EngineersService {
     updateEngineerDto: UpdateEngineerDto
   ): Promise<AttendantEngineer> {
     try {
-      const hashedEngineer = await this.hashActivationPassword(
-        updateEngineerDto
-      );
+      const emitter = await this.findById(engineerId);
 
-      const engineer = await this.engineerModel.findByIdAndUpdate(
+      let updateEngineer = updateEngineerDto;
+      if (
+        await compareHash(
+          updateEngineerDto.activationPassword,
+          emitter.activationPassword
+        )
+      ) {
+        updateEngineer = await this.hashActivationPassword(updateEngineerDto);
+      }
+
+      const engineer = await this.engineersRepository.findOneAndUpdate(
         { _id: engineerId },
-        hashedEngineer,
+        updateEngineer,
         { new: true }
       );
 
@@ -109,7 +111,7 @@ export class EngineersService {
     activatedEmitters.splice(activatedEmitters.indexOf(emitterId), 1);
 
     engineer.activatedEmitters = activatedEmitters;
-    await engineer.update();
+    await this.update(engineerId, engineer);
   }
 
   public async hashActivationPassword(
@@ -123,7 +125,7 @@ export class EngineersService {
     return { ...engineerDto, activationPassword: hashedPassword };
   }
 
-  public async remove(engineerId: Types.ObjectId | string): Promise<any> {
+  public async remove(engineerId: Types.ObjectId | string): Promise<unknown> {
     try {
       const engineer = await this.findById(engineerId);
       return engineer.delete();

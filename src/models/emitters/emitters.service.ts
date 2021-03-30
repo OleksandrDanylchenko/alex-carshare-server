@@ -56,7 +56,7 @@ export class EmittersService {
         newEmitter._id
       );
 
-      return await newEmitter.save();
+      return newEmitter;
     } catch (error) {
       newEmitter?.remove();
       throw new BadRequestException(error.message);
