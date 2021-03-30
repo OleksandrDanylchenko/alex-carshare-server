@@ -1,8 +1,10 @@
 import {
   FilterQuery,
   Model,
-  UpdateQuery,
-  QueryPopulateOptions
+  QueryFindOneAndRemoveOptions,
+  QueryFindOneAndUpdateOptions,
+  QueryPopulateOptions,
+  UpdateQuery
 } from 'mongoose';
 import { BaseSchema } from '../schemas/base-schema.schema';
 import { PaginationQuery } from '../dtos/pagination-query';
@@ -36,12 +38,20 @@ export class SchemaRepository<T extends BaseSchema> {
 
   async findOneAndUpdate(
     modelFilterQuery: FilterQuery<T>,
-    updateModel: UpdateQuery<T>
+    updateModel: UpdateQuery<T>,
+    updateOptions: QueryFindOneAndUpdateOptions = { new: true }
   ): Promise<T> {
-    return this.model.findOneAndUpdate(modelFilterQuery, updateModel);
+    return this.model.findOneAndUpdate(
+      modelFilterQuery,
+      updateModel,
+      updateOptions
+    );
   }
 
-  async findOneAndDelete(emitterFilterQuery: FilterQuery<T>): Promise<T> {
-    return this.model.findOneAndDelete(emitterFilterQuery);
+  async findOneAndDelete(
+    emitterFilterQuery: FilterQuery<T>,
+    updateOptions: QueryFindOneAndRemoveOptions = { projection: {} }
+  ): Promise<T> {
+    return this.model.findOneAndDelete(emitterFilterQuery, updateOptions);
   }
 }

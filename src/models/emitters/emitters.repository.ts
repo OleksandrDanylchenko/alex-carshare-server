@@ -14,7 +14,7 @@ export class EmittersRepository extends SchemaRepository<Emitter> {
   }
 
   public async findByEmitterId(emitterId: string): Promise<Emitter> {
-    return this.findOne({ emitterId: emitterId as string }, [
+    return this.findOne({ emitterId }, [
       { path: 'activator', select: ['name', 'surname', 'activationLogin'] }
     ]);
   }

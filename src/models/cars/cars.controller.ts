@@ -21,12 +21,12 @@ export class CarsController {
   public async getAllCars(
     @Query() paginationQuery: PaginationQuery
   ): Promise<Car[]> {
-    return this.carsService.findWhere({}, paginationQuery);
+    return this.carsService.findAll(paginationQuery);
   }
 
-  @Get('/:id')
-  public async getCarById(@Param('id') carId: string): Promise<Car> {
-    return this.carsService.findById(carId);
+  @Get('/:vin')
+  public async getCarById(@Param('vin') vin: string): Promise<Car> {
+    return this.carsService.findByVin(vin);
   }
 
   @Post()
@@ -34,16 +34,16 @@ export class CarsController {
     return this.carsService.create(createCarDto);
   }
 
-  @Put('/:id')
+  @Put('/:vin')
   public async updateCar(
-    @Param('id') carId: string,
+    @Param('vin') vin: string,
     @Body() updateCarDto: UpdateCarDto
   ): Promise<Car> {
-    return this.carsService.update(carId, updateCarDto);
+    return this.carsService.update(vin, updateCarDto);
   }
 
-  @Delete('/:id')
-  public async deleteCar(@Param('id') carId: string): Promise<any> {
-    return this.carsService.remove(carId);
+  @Delete('/:vin')
+  public async deleteCar(@Param('vin') vin: string): Promise<Car> {
+    return this.carsService.remove(vin);
   }
 }

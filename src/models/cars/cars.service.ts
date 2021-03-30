@@ -5,70 +5,54 @@ import {
   Injectable,
   NotFoundException
 } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Types } from 'mongoose';
 import { PaginationQuery } from '../common/dtos/pagination-query';
 import { Car } from './schemas/car.schema';
 import { EmittersService } from '../emitters/emitters.service';
 import { CreateCarDto, UpdateCarDto } from './dtos';
 import { Emitter } from '../emitters/schemas/emitter.schema';
+import { CarsRepository } from './cars.repository';
 
 @Injectable()
 export class CarsService {
   constructor(
-    @InjectModel(Car.name)
-    private readonly carModel: Model<Car>,
+    private readonly carsRepository: CarsRepository,
     @Inject(forwardRef(() => EmittersService))
     private readonly emittersService: EmittersService
   ) {}
 
-  public async findById(carId: Types.ObjectId | string): Promise<Car> {
-    const car = await this.carModel
-      .findOne({ _id: carId })
-      .populate('emitter')
-      .exec();
+  public async findByVin(vin: string): Promise<Car> {
+    const car = await this.carsRepository.findByVin(vin);
 
     if (!car) {
-      throw new NotFoundException(`Car with id: ${carId} wasn't found!`);
+      throw new NotFoundException(`Car with vin: ${vin} wasn't found!`);
     }
 
     return car;
   }
 
-  public async findOneWhere(where: Record<string, unknown>): Promise<Car> {
-    return this.carModel.findOne(where).exec();
-  }
-
-  public async findWhere(
-    where: Record<string, unknown>,
-    paginationQuery: PaginationQuery
-  ): Promise<Car[]> {
-    const { limit, offset } = paginationQuery;
-    return this.carModel.find(where).skip(offset).limit(limit).exec();
+  public async findAll(paginationQuery: PaginationQuery): Promise<Car[]> {
+    return this.carsRepository.find({}, paginationQuery);
   }
 
   public async create(createCarDto: CreateCarDto): Promise<Car> {
     try {
-      const newCarModel = new this.carModel(createCarDto);
+      const newCarModel = await this.carsRepository.create(createCarDto as Car);
       return newCarModel.save();
     } catch (error) {
       throw new BadRequestException(error.message);
     }
   }
 
-  public async update(
-    carId: Types.ObjectId | string,
-    updateCarDto: UpdateCarDto
-  ): Promise<Car> {
+  public async update(vin: string, updateCarDto: UpdateCarDto): Promise<Car> {
     try {
-      const car = await this.carModel.findByIdAndUpdate(
-        { _id: carId },
-        updateCarDto,
-        { new: true }
+      const car = await this.carsRepository.findOneAndUpdate(
+        { vin },
+        updateCarDto
       );
 
       if (!car) {
-        throw new NotFoundException(`Car with id: ${carId} wasn't found!`);
+        throw new NotFoundException(`Car with vin: ${vin} wasn't found!`);
       }
 
       return car;
@@ -81,14 +65,14 @@ export class CarsService {
     carId: Types.ObjectId,
     emitterId: Types.ObjectId
   ): Promise<void> {
-    const car = await this.findById(carId);
+    const car = await this.carsRepository.findOne({ carId });
     car.emitter = emitterId;
     car.update();
   }
 
-  public async remove(carId: Types.ObjectId | string): Promise<any> {
+  public async remove(vin: string): Promise<any> {
     try {
-      const car = await this.findById(carId);
+      const car = await this.findByVin(vin);
       await this.removeCarEmitter((car.emitter as Emitter)?._id?.toHexString());
       return car.delete();
     } catch (error) {
@@ -104,7 +88,7 @@ export class CarsService {
 
   public async removeCarTrip(carId?: Types.ObjectId): Promise<void> {
     if (carId) {
-      const car = await this.findById(carId);
+      const car = await this.carsRepository.findOne({ carId });
       car.currentTrip = undefined;
       car.update();
     }

@@ -5,6 +5,7 @@ import { CarsController } from './cars.controller';
 import { Car, CarSchema } from './schemas/car.schema';
 import { Schema } from 'mongoose';
 import { EmittersModule } from '../emitters/emitters.module';
+import { CarsRepository } from './cars.repository';
 
 @Module({
   imports: [
@@ -25,7 +26,7 @@ import { EmittersModule } from '../emitters/emitters.module';
     forwardRef(() => EmittersModule)
   ],
   controllers: [CarsController],
-  providers: [CarsService],
+  providers: [CarsService, CarsRepository],
   exports: [CarsService]
 })
 export class CarsModule {}
