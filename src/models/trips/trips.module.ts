@@ -5,6 +5,7 @@ import { TripsController } from './trips.controller';
 import { Trip, TripSchema } from './schemas/trip.schema';
 import { Schema } from 'mongoose';
 import { CarsModule } from '../cars/cars.module';
+import { TripsRepository } from './trips.repository';
 
 @Module({
   imports: [
@@ -26,7 +27,7 @@ import { CarsModule } from '../cars/cars.module';
     CarsModule
   ],
   controllers: [TripsController],
-  providers: [TripsService],
+  providers: [TripsService, TripsRepository],
   exports: [TripsService]
 })
 export class TripsModule {}

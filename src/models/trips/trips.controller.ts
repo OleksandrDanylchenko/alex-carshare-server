@@ -22,7 +22,7 @@ export class TripsController {
   public async getAllTrips(
     @Query() paginationQuery: PaginationQuery
   ): Promise<Trip[]> {
-    return this.tripsService.findWhere({}, paginationQuery);
+    return this.tripsService.findAll(paginationQuery);
   }
 
   @Get('/:id')

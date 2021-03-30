@@ -3,28 +3,26 @@ import {
   Injectable,
   NotFoundException
 } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Types } from 'mongoose';
 import { PaginationQuery } from '../common/dtos/pagination-query';
 import { Trip } from './schemas/trip.schema';
 import { CreateTripsDto } from './dtos';
 import { UpdateTripsDto } from './dtos/update-trips.dto';
 import { Car } from '../cars/schemas/car.schema';
 import { CarsService } from '../cars/cars.service';
+import { TripsRepository } from './trips.repository';
 
 @Injectable()
 export class TripsService {
   constructor(
-    @InjectModel(Trip.name)
-    private readonly tripModel: Model<Trip>,
+    private readonly tripsRepository: TripsRepository,
     private readonly carsService: CarsService
   ) {}
 
   public async findById(tripId: Types.ObjectId | string): Promise<Trip> {
-    const trip = await this.tripModel
-      .findOne({ _id: tripId })
-      .populate('car')
-      .exec();
+    const trip = await this.tripsRepository.findOne({ _id: tripId }, [
+      { path: 'car' }
+    ]);
 
     if (!trip) {
       throw new NotFoundException(`Trip with id: ${tripId} wasn't found!`);
@@ -33,22 +31,13 @@ export class TripsService {
     return trip;
   }
 
-  public async findOneWhere(where: Record<string, unknown>): Promise<Trip> {
-    return this.tripModel.findOne(where).exec();
-  }
-
-  public async findWhere(
-    where: Record<string, unknown>,
-    paginationQuery: PaginationQuery
-  ): Promise<Trip[]> {
-    const { limit, offset } = paginationQuery;
-    return this.tripModel.find(where).skip(offset).limit(limit).exec();
+  public async findAll(paginationQuery: PaginationQuery): Promise<Trip[]> {
+    return this.tripsRepository.find({}, paginationQuery);
   }
 
   public async create(createTripDto: CreateTripsDto): Promise<Trip> {
     try {
-      const newTrip = new this.tripModel(createTripDto);
-      return newTrip.save(); // TODO Rework
+      return await this.tripsRepository.create(createTripDto as Trip);
     } catch (error) {
       throw new BadRequestException(error.message);
     }
@@ -59,7 +48,7 @@ export class TripsService {
     updateTripDto: UpdateTripsDto
   ): Promise<Trip> {
     try {
-      const trip = await this.tripModel.findByIdAndUpdate(
+      const trip = await this.tripsRepository.findOneAndUpdate(
         { _id: carId },
         updateTripDto,
         { new: true }
